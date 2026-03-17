@@ -1,0 +1,4056 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>ONE SHARE | 当每一股都被正确理解，企业价值才真正被看见</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ---- Reset ---- */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    /* ---- Base ---- */
+    body {
+      font-family: 'poppins', Helvetica, Arial, sans-serif;
+      background: #000;
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    /* ---- Canvas (WebGL aurora + particles) ---- */
+    #webgl {
+      display: block;
+      width: 100%;
+      height: 100vh;
+      position: fixed;
+      z-index: 0;
+      top: 0;
+      left: 0;
+    }
+
+    /* ---- Announcement Banner ---- */
+    .head-banner {
+      position: relative;
+      z-index: 999;
+      background: linear-gradient(90deg, #0a1f1a 0%, #0d2e25 100%);
+      width: 100%;
+      overflow: hidden;
+      will-change: height;
+    }
+    .head-banner__container {
+      margin: auto;
+      max-width: 1400px;
+      padding: 0.75rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+    }
+    .head-banner__container-left {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .head-banner__image {
+      height: 24px;
+      width: auto;
+    }
+    .head-banner__text {
+      font-size: 16px;
+      letter-spacing: 0.5px;
+      color: white;
+      margin: 0;
+      font-weight: 400;
+    }
+    .head-banner__link {
+      flex-shrink: 0;
+      color: #1a8a6e;
+      font-size: 16px;
+      position: relative;
+      width: fit-content;
+      text-decoration: none;
+    }
+    .head-banner__link::after {
+      content: "";
+      position: absolute;
+      height: 2px;
+      width: 100%;
+      bottom: -2px;
+      left: 0;
+      background-color: #1a8a6e;
+    }
+    .head-banner__off {
+      position: absolute;
+      z-index: 3;
+      top: 50%;
+      right: 1rem;
+      transform: translateY(-50%);
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px;
+    }
+
+    /* ---- Header / Nav ---- */
+    .header {
+      width: 100%;
+      position: relative;
+      z-index: 20;
+    }
+    .header-desktop {
+      width: 100%;
+      position: fixed;
+      top: 32px;
+      left: 0;
+      z-index: 10;
+      transition: transform 0.4s ease, opacity 0.4s ease;
+    }
+    .header-desktop.nav-hidden {
+      transform: translateY(-120%);
+      opacity: 0;
+    }
+    .header-desktop nav {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+    .nav-flex {
+      display: flex;
+      align-items: center;
+      color: white;
+    }
+    .logo-wrap {
+      width: 16.666%;
+      padding: 2.5rem 0;
+    }
+    .logo-wrap a {
+      display: block;
+    }
+    .logo-wrap img {
+      width: 83.333%;
+      height: auto;
+    }
+    .nav-right {
+      width: 83.333%;
+      display: flex;
+      justify-content: flex-end;
+    }
+    .nav-menu {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      background-color: rgba(13, 31, 26, 0.65);
+      backdrop-filter: blur(37px) brightness(0.99);
+      -webkit-backdrop-filter: blur(37px) brightness(0.99);
+      padding: 0.75rem 2.5rem;
+      border-radius: 9999px;
+      font-size: 20px;
+      font-family: 'Montserrat', Helvetica, Arial, sans-serif;
+      list-style: none;
+    }
+    @media (min-width: 1950px) {
+      .nav-menu { gap: 1.5rem; }
+    }
+    .nav-menu li {
+      transition: opacity 0.3s;
+      cursor: pointer;
+    }
+    .nav-menu li:hover {
+      opacity: 0.6;
+    }
+    .nav-menu li a {
+      color: white;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .nav-menu .expertise-item {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+    .chevron-menu {
+      height: 100%;
+      width: 100%;
+      max-width: 16px;
+      object-fit: contain;
+    }
+
+    /* Burger menu */
+    .menu-burger {
+      padding: 0 1rem;
+      cursor: pointer;
+    }
+    .burger-line-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      justify-content: space-around;
+      align-items: flex-end;
+      height: 100%;
+    }
+    .burger-line {
+      width: 40px;
+      height: 2px;
+      background-color: white;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      transform-origin: center;
+    }
+
+    /* ---- Green Buttons ---- */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      height: 40px;
+      margin: 0.25rem 0;
+      text-decoration: none;
+    }
+    .button_circle {
+      background-color: #1a8a6e;
+      border-radius: 9999px;
+      height: 100%;
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+    }
+    .button_circle img {
+      height: 100%;
+      width: 40%;
+      max-width: 16px;
+      object-fit: contain;
+    }
+    .btn-label {
+      border-radius: 9999px;
+      padding: 0.5rem 1rem;
+      transition: background-color 0.3s;
+      color: #000;
+      background-color: #1a8a6e;
+      display: flex;
+      align-items: center;
+      font-size: 1rem;
+      font-weight: 400;
+    }
+    @media (min-width: 1950px) {
+      .btn-label { font-size: 1.125rem; }
+    }
+    .btn:hover .button_circle {
+      background-color: #fff;
+    }
+    .btn:hover .btn-label {
+      background-color: #fff;
+    }
+
+    /* ---- Hero Section ---- */
+    .page-wrapper {
+      position: relative;
+    }
+    .relative-bg {
+      position: relative;
+      background: transparent;
+    }
+    .main-content {
+      position: relative;
+      z-index: 2;
+    }
+    .hero-section {
+      height: 100vh;
+      max-width: 1400px;
+      padding: 0 1rem;
+      margin: 0 auto;
+      padding-bottom: 0;
+      position: relative;
+      z-index: 2;
+      overflow: visible;
+    }
+    .hero-flex {
+      display: flex;
+      flex-wrap: wrap;
+      height: 100%;
+    }
+    .hero-left {
+      width: 100%;
+      display: flex;
+      height: 100%;
+      align-items: flex-end;
+      padding-right: 0;
+      order: 2;
+      padding: 2.5rem 0;
+    }
+    @media (min-width: 1280px) {
+      .hero-left {
+        width: 33.333%;
+        align-items: center;
+        padding-right: 10%;
+        order: 1;
+        padding: 0;
+      }
+    }
+    .hero-left-inner {
+      margin-top: 0;
+    }
+    @media (min-width: 1280px) {
+      .hero-left-inner {
+        margin-top: -120px;
+      }
+    }
+    .hero-description {
+      display: inline-block;
+      margin-bottom: 1.5rem;
+      color: white;
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+    @media (min-width: 1536px) {
+      .hero-description { font-size: 1.25rem; }
+    }
+    .hero-right {
+      width: 100%;
+      display: flex;
+      height: 100%;
+      align-items: center;
+      padding-top: 10rem;
+      order: 1;
+    }
+    @media (min-width: 1024px) {
+      .hero-right {
+        padding-top: 15rem;
+      }
+    }
+    @media (min-width: 1280px) {
+      .hero-right {
+        width: 66.666%;
+        align-items: flex-end;
+        padding-top: 0;
+        order: 2;
+      }
+    }
+    .hero-heading {
+      font-family: 'Montserrat', Helvetica, Arial, sans-serif;
+      font-weight: 700;
+      color: white;
+      margin: 0;
+      font-size: 40px;
+      line-height: 42px;
+    }
+    @media (min-width: 1024px) {
+      .hero-heading {
+        font-size: 80px;
+        line-height: 72px;
+      }
+    }
+    @media (min-width: 1280px) {
+      .hero-heading {
+        font-size: 102px;
+        line-height: 102px;
+      }
+    }
+    @media (min-width: 1536px) {
+      .hero-heading {
+        font-size: 126px;
+        line-height: 118px;
+      }
+    }
+    @media (min-width: 1950px) {
+      .hero-heading {
+        font-size: 166px;
+        line-height: 158px;
+      }
+    }
+
+    /* ---- Hero Image (starts bottom-left, expands on scroll) ---- */
+    .hero-image {
+      position: absolute;
+      bottom: -2%;
+      left: 1rem;
+      z-index: 3;
+      width: 25%;
+      max-width: 350px;
+      min-width: 200px;
+      transform-origin: bottom left;
+      will-change: transform, width, left, bottom, border-radius;
+    }
+    @media (min-width: 1280px) {
+      .hero-image {
+        left: 0;
+      }
+    }
+    .hero-image-inner {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+    .hero-image-inner img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* ---- Responsive (Tablet / Mobile) ---- */
+    @media (max-width: 1279px) {
+      .header-desktop { display: none; }
+      .mobile-header { display: flex; }
+    }
+    @media (min-width: 1280px) {
+      .mobile-header { display: none !important; }
+    }
+
+    /* ---- Mobile Header ---- */
+    .mobile-header {
+      width: 100%;
+      position: fixed;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      padding: 2rem 0.5rem;
+      color: white;
+    }
+    .mobile-logo-wrap {
+      width: 41.666%;
+      padding: 0.5rem 1rem;
+    }
+    .mobile-logo-wrap img {
+      width: 100%;
+      height: auto;
+    }
+    .mobile-nav-right {
+      width: 58.333%;
+      display: flex;
+      justify-content: flex-end;
+    }
+    .mobile-burger {
+      padding: 1rem;
+      cursor: pointer;
+      background-color: rgba(13, 31, 26, 0.65);
+      backdrop-filter: blur(37px) brightness(0.99);
+      -webkit-backdrop-filter: blur(37px) brightness(0.99);
+      border-radius: 9999px;
+      width: 80px;
+      display: flex;
+      justify-content: center;
+      border: none;
+    }
+
+    /* ---- Preloader (Bloomberg Terminal) ---- */
+    .preloader {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: #000;
+      z-index: 99999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .preloader.phase-out {
+      animation: preloaderOut 0.8s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+    }
+    @keyframes preloaderOut {
+      0% { clip-path: inset(0 0 0 0); }
+      100% { clip-path: inset(0 0 100% 0); }
+    }
+    /* Scanline overlay */
+    .preloader::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(26,138,110,0.03) 2px,
+        rgba(26,138,110,0.03) 4px
+      );
+      pointer-events: none;
+      z-index: 2;
+    }
+    /* Scanline sweep */
+    .preloader::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 6px;
+      background: linear-gradient(180deg, rgba(26,138,110,0.4), transparent);
+      animation: scanSweep 1.5s linear infinite;
+      z-index: 3;
+    }
+    @keyframes scanSweep {
+      0% { top: -6px; }
+      100% { top: 100%; }
+    }
+    /* Ticker rows */
+    .pre-terminal {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      padding: 2rem;
+      overflow: hidden;
+      opacity: 0.12;
+    }
+    .pre-ticker-row {
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      color: #1a8a6e;
+      white-space: nowrap;
+      line-height: 1.8;
+      animation: tickerScroll 20s linear infinite;
+    }
+    .pre-ticker-row:nth-child(even) { animation-duration: 25s; animation-direction: reverse; }
+    .pre-ticker-row:nth-child(3n) { color: #14705a; }
+    @keyframes tickerScroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    /* Center content */
+    .pre-center {
+      position: relative;
+      z-index: 5;
+      text-align: center;
+    }
+    /* Number scramble display */
+    .pre-numbers {
+      font-family: 'Courier New', monospace;
+      font-size: clamp(0.75rem, 2vw, 1rem);
+      color: rgba(26,138,110,0.5);
+      letter-spacing: 0.3em;
+      margin-bottom: 2rem;
+      min-height: 1.2em;
+    }
+    /* Brand reveal */
+    .pre-brand {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: clamp(2.5rem, 10vw, 6rem);
+      color: #fff;
+      letter-spacing: 0.05em;
+      position: relative;
+      overflow: hidden;
+    }
+    .pre-brand-one {
+      color: #1a8a6e;
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(100%);
+    }
+    .pre-brand-share {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(100%);
+    }
+    .pre-brand.revealed .pre-brand-one {
+      animation: brandCharIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .pre-brand.revealed .pre-brand-share {
+      animation: brandCharIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.15s forwards;
+    }
+    @keyframes brandCharIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    /* Tagline */
+    .pre-tagline {
+      font-family: 'poppins', sans-serif;
+      font-size: clamp(0.7rem, 1.5vw, 0.85rem);
+      color: rgba(255,255,255,0.35);
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      margin-top: 1.5rem;
+      opacity: 0;
+    }
+    .pre-tagline.show {
+      animation: fadeIn 0.5s ease 0.4s forwards;
+    }
+    @keyframes fadeIn { to { opacity: 1; } }
+    /* Bottom data strip */
+    .pre-data-strip {
+      position: absolute;
+      bottom: 2rem;
+      left: 0; right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      z-index: 5;
+    }
+    .pre-data-item {
+      text-align: center;
+      opacity: 0;
+    }
+    .pre-data-item.show { animation: fadeIn 0.3s ease forwards; }
+    .pre-data-val {
+      font-family: 'Courier New', monospace;
+      font-size: clamp(1rem, 2.5vw, 1.5rem);
+      font-weight: 700;
+      color: #1a8a6e;
+    }
+    .pre-data-label {
+      font-family: 'poppins', sans-serif;
+      font-size: 0.65rem;
+      color: rgba(255,255,255,0.3);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-top: 0.25rem;
+    }
+    /* Green flash */
+    .pre-flash {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: #1a8a6e;
+      z-index: 10;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .pre-flash.fire {
+      animation: greenFlash 0.4s ease-out;
+    }
+    @keyframes greenFlash {
+      0% { opacity: 0.6; }
+      100% { opacity: 0; }
+    }
+
+    /* Stats text words stagger */
+    .stats-heading > span:not(.green-pill) {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .stats-heading.stats-animated > span:not(.green-pill) {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .pill-number {
+      display: flex !important;
+    }
+
+    /* ---- Scroll Reveal ---- */
+    .scroll-reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .scroll-reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .scroll-reveal-delay-1 { transition-delay: 0.1s; }
+    .scroll-reveal-delay-2 { transition-delay: 0.2s; }
+    .scroll-reveal-delay-3 { transition-delay: 0.3s; }
+
+    /* ---- Animations (paused until preloader done) ---- */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .fade-in {
+      animation: fadeInUp 0.8s ease forwards;
+      animation-play-state: paused;
+      opacity: 0;
+    }
+    .preloader-done .fade-in {
+      animation-play-state: running;
+    }
+    .fade-in-delay-1 { animation-delay: 0.2s; opacity: 0; }
+    .fade-in-delay-2 { animation-delay: 0.4s; opacity: 0; }
+    .fade-in-delay-3 { animation-delay: 0.6s; opacity: 0; }
+    .fade-in-delay-4 { animation-delay: 0.8s; opacity: 0; }
+
+    /* ---- Scroll spacer for image expansion ---- */
+    .video-scroll-spacer {
+      height: 100vh;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Fade elements on scroll */
+    .fade-el-scroll {
+      transition: opacity 0.4s ease, filter 0.4s ease;
+    }
+
+    /* ---- Stats Section ---- */
+    .stats-section {
+      position: relative;
+      z-index: 2;
+    }
+    .stats-inner {
+      max-width: 1400px;
+      padding: 4rem 1rem;
+      margin: 0 auto;
+      position: sticky;
+      top: 0;
+    }
+    @media (min-width: 1280px) {
+      .stats-inner {
+        padding: 8rem 0;
+        margin-top: -20vh;
+      }
+    }
+    @media (min-width: 1536px) {
+      .stats-inner {
+        margin-top: -25vh;
+      }
+    }
+    .stats-heading {
+      color: white;
+      font-family: 'Montserrat', Helvetica, Arial, sans-serif;
+      font-weight: 700;
+      font-style: italic;
+      font-size: 30px;
+      line-height: 1.4;
+      text-align: center;
+    }
+    @media (min-width: 1280px) {
+      .stats-heading {
+        font-size: 75px;
+        line-height: 1.3;
+        width: 75%;
+        margin: 0 auto;
+      }
+    }
+    @media (min-width: 1536px) {
+      .stats-heading {
+        font-size: 80px;
+        width: 66.666%;
+      }
+    }
+
+    /* Green pills */
+    .green-pill {
+      background-color: #1a8a6e;
+      border-radius: 9999px;
+      display: inline-flex;
+      align-items: center;
+      vertical-align: middle;
+      height: 45px;
+      margin: 0.25rem 0.5rem;
+      transform-origin: center left;
+      font-style: normal;
+      transform: scale(0);
+      transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .green-pill.pill-visible {
+      transform: scale(1);
+    }
+    @media (min-width: 1280px) {
+      .green-pill {
+        height: 55px;
+      }
+    }
+    .pill-content {
+      padding: 0;
+      display: flex;
+      align-items: center;
+      gap: 0;
+      justify-content: center;
+      height: 100%;
+    }
+    .pill-number {
+      color: #000;
+      font-weight: 700;
+      font-size: 1rem;
+      font-family: 'Montserrat', Helvetica, Arial, sans-serif;
+      background-color: #14705a;
+      border-radius: 9999px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 0.75rem;
+      white-space: nowrap;
+    }
+    @media (min-width: 1024px) {
+      .pill-number {
+        font-size: 1.5rem;
+        padding: 0 1rem;
+      }
+    }
+    .pill-text {
+      color: #000;
+      font-size: 0.65rem;
+      line-height: 1.1;
+      font-weight: 400;
+      font-family: 'poppins', sans-serif;
+      padding: 0 0.75rem;
+    }
+    @media (min-width: 1024px) {
+      .pill-text {
+        font-size: 0.75rem;
+        padding: 0 1rem;
+      }
+    }
+    .green-pill-empty {
+      background-color: #1a8a6e;
+      border-radius: 9999px;
+      display: inline-block;
+      vertical-align: middle;
+      height: 35px;
+      margin: 0 0.5rem;
+      transform-origin: center left;
+    }
+    @media (min-width: 1280px) {
+      .green-pill-empty {
+        height: 55px;
+      }
+    }
+
+    /* ---- White Section (Expertise Cards) ---- */
+    .white-section {
+      background-color: #fff;
+      border-top-left-radius: 1rem;
+      border-top-right-radius: 1rem;
+      position: relative;
+      z-index: 10;
+    }
+    .container-inner {
+      max-width: 1400px;
+      padding: 5rem 1rem 0;
+      margin: 0 auto;
+    }
+    @media (min-width: 1280px) {
+      .container-inner {
+        padding: 5rem 0 0;
+      }
+    }
+    /* Word-splitting waterfall reveal */
+    [data-splitting] .word {
+      display: inline-flex;
+      align-items: baseline;
+      overflow: hidden;
+      padding-bottom: 0.08em;
+    }
+    [data-splitting] .word-content {
+      display: inline-block;
+      transform: translateY(100%);
+    }
+
+    /* Fade-in animation */
+    .anim-fade {
+      opacity: 0;
+    }
+
+    /* Pop-up bounce for button circles */
+    .anim-pop {
+      transform: scale(0);
+    }
+    @keyframes popUpEffect {
+      0%   { transform: scale(0); }
+      25%  { transform: scale(1.1); }
+      50%  { transform: scale(0.9); }
+      75%  { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    /* Clip-path reveal from left */
+    .anim-clip-left {
+      clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+    }
+    @keyframes rollFromLeft {
+      from { clip-path: polygon(0 0, 0 0, 0 100%, 0 100%); }
+      to   { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
+    }
+
+    /* Clip-path reveal from right (for btn label) */
+    .anim-clip-right {
+      clip-path: polygon(100% 0, 100% 0, 100% 100%, 100% 100%);
+    }
+    @keyframes rollFromRight {
+      from { clip-path: polygon(100% 0, 100% 0, 100% 100%, 100% 100%); }
+      to   { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
+    }
+
+    /* Image reveal: green wipe + fade + zoom */
+    .anim-image-wrap {
+      position: relative;
+      overflow: hidden;
+    }
+    .anim-image-overlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: #1a8a6e;
+      z-index: 30;
+      border-radius: inherit;
+      clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+    }
+    @keyframes rollFromLeftOverlay {
+      0%   { clip-path: polygon(0 0, 0 0, 0 100%, 0 100%); }
+      50%  { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
+      100% { clip-path: polygon(100% 0, 100% 0, 100% 100%, 100% 100%); }
+    }
+    .anim-image-inner {
+      opacity: 0;
+      width: 100%; height: 100%;
+    }
+    @keyframes fadeElement {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    .anim-image-inner img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transform: scale(1.4);
+      filter: blur(4px);
+    }
+
+    .expertise-title {
+      font-family: 'Montserrat', Helvetica, Arial, sans-serif;
+      font-weight: 700;
+      color: #000;
+      text-align: center;
+      font-size: 1.875rem;
+      line-height: 1.1;
+      margin: 0 auto;
+    }
+    @media (min-width: 1024px) {
+      .expertise-title {
+        font-size: 50px;
+        line-height: 42px;
+        width: 83.333%;
+      }
+    }
+    @media (min-width: 1280px) {
+      .expertise-title {
+        font-size: 80px;
+        line-height: 72px;
+        padding: 5rem 0;
+      }
+    }
+    @media (min-width: 1536px) {
+      .expertise-title {
+        font-size: 100px;
+        line-height: 92px;
+        width: 66.666%;
+      }
+    }
+
+    /* Expertise cards container */
+    .cards-expertises {
+      padding: 5rem 0;
+    }
+    .expertises-container {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      height: calc(var(--cards-count) * 80vh + 160px);
+    }
+    @media (max-width: 380px) {
+      .expertises-container {
+        height: calc(var(--cards-count) * 100vh + 160px);
+      }
+    }
+    @media (min-width: 1024px) {
+      .expertises-container {
+        height: calc(var(--cards-count) * 60vh + 160px);
+      }
+    }
+    @media (min-width: 1280px) {
+      .expertises-container {
+        height: calc(var(--cards-count) * 80vh + 160px);
+      }
+    }
+
+    /* Individual expertise card */
+    .expertise-card {
+      position: sticky;
+      height: 80vh;
+      padding: 2rem;
+      border-radius: 33px;
+      transform-origin: top center;
+      transition: transform 0.05s linear, background-color 0.05s linear;
+      will-change: transform, background-color;
+    }
+    @media (min-width: 1024px) {
+      .expertise-card {
+        height: 60vh;
+        padding: 5rem 4rem;
+      }
+    }
+    @media (min-width: 1280px) {
+      .expertise-card {
+        height: 80vh;
+        padding: 4rem;
+      }
+    }
+    @media (min-width: 1536px) {
+      .expertise-card {
+        padding: 5rem;
+      }
+    }
+    .card-flex {
+      display: flex;
+      flex-wrap: wrap;
+      height: 100%;
+    }
+    .card-left {
+      width: 100%;
+    }
+    @media (min-width: 1024px) {
+      .card-left {
+        width: 50%;
+      }
+    }
+    @media (min-width: 1536px) {
+      .card-left {
+        width: 33.333%;
+      }
+    }
+    .card-right {
+      width: 100%;
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-end;
+    }
+    @media (min-width: 1024px) {
+      .card-right {
+        width: 50%;
+      }
+    }
+    @media (min-width: 1536px) {
+      .card-right {
+        width: 66.666%;
+      }
+    }
+    .card-right .card-icon {
+      width: 41.666%;
+      height: auto;
+    }
+    @media (min-width: 1024px) {
+      .card-right .card-icon {
+        height: 200px;
+      }
+    }
+    @media (min-width: 1280px) {
+      .card-right .card-icon {
+        height: 150px;
+      }
+    }
+    @media (min-width: 1536px) {
+      .card-right .card-icon {
+        height: 200px;
+      }
+    }
+    .card-title {
+      font-family: 'Montserrat', Helvetica, Arial, sans-serif;
+      font-weight: 700;
+      color: #000;
+      font-size: 1.5rem;
+      line-height: 1;
+      margin: 0;
+    }
+    @media (min-width: 1024px) {
+      .card-title {
+        font-size: 45px;
+      }
+    }
+    @media (min-width: 1536px) {
+      .card-title {
+        font-size: 50px;
+      }
+    }
+    .card-desc {
+      padding: 1.25rem 0;
+      font-size: 0.875rem;
+      color: #898c8a;
+      line-height: 1.5;
+    }
+    .card-tags {
+      list-style: none;
+      padding-top: 2.5rem;
+    }
+    .card-tags li {
+      margin-bottom: 0.5rem;
+      display: flex;
+      gap: 0.25rem;
+      align-items: stretch;
+    }
+    .tag-icon {
+      width: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      aspect-ratio: 1;
+      background-color: #fff;
+      border-radius: 0.375rem;
+      padding: 0.75rem;
+    }
+    .tag-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .tag-text {
+      display: inline-flex;
+      align-items: center;
+      background-color: #fff;
+      flex-grow: 1;
+      border-radius: 0.375rem;
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+      color: #000;
+    }
+    @media (min-width: 1024px) {
+      .tag-text {
+        font-size: 1rem;
+      }
+    }
+
+    /* Card button color override for dark card text */
+    .expertise-card .btn-label {
+      color: #000;
+    }
+
+    /* ---- Team / Testimonials Section ---- */
+    .teams-section {
+      background-color: #fff;
+      padding: 250px 0 200px;
+      overflow: hidden;
+      position: relative;
+      z-index: 10;
+    }
+    @media (min-width: 1024px) {
+      .teams-section {
+        padding: 280px 0;
+      }
+    }
+    .teams-container {
+      max-width: 1400px;
+      padding: 0 1rem;
+      margin: 0 auto;
+      position: relative;
+    }
+    @media (min-width: 1280px) {
+      .teams-container {
+        padding: 0;
+      }
+    }
+
+    /* Quote bubbles */
+    .testimonial {
+      position: absolute;
+      width: 91.666%;
+      border-radius: 0 9999px 9999px 9999px;
+      padding: 0.75rem 1rem;
+      display: flex;
+      align-items: center;
+      z-index: 10;
+      transform: scale(0);
+      transform-origin: bottom left;
+      transition: all 0.3s;
+    }
+    @media (min-width: 1024px) {
+      .testimonial {
+        padding: 0.75rem 2rem;
+      }
+    }
+    @media (min-width: 1280px) {
+      .testimonial {
+        width: 41.666%;
+      }
+    }
+    .testimonial.pop-visible {
+      animation: popUpEffect 1.6s cubic-bezier(0.7, 0, 0.3, 1) forwards;
+    }
+    .testimonial .quote-text {
+      width: 75%;
+      font-size: 0.75rem;
+      color: #000;
+    }
+    @media (min-width: 1024px) {
+      .testimonial .quote-text {
+        font-size: 1rem;
+      }
+    }
+    .testimonial .quote-name {
+      width: 25%;
+      display: flex;
+      justify-content: flex-end;
+      font-size: 0.75rem;
+      color: #000;
+    }
+    @media (min-width: 1024px) {
+      .testimonial .quote-name {
+        font-size: 1rem;
+      }
+    }
+
+    /* Bubble positions */
+    .testimonial-francine {
+      left: 0;
+      top: -3.5rem;
+    }
+    @media (min-width: 1024px) {
+      .testimonial-francine { top: -2.5rem; }
+    }
+    .testimonial-myriam {
+      top: -13rem;
+    }
+    @media (min-width: 1280px) {
+      .testimonial-myriam { left: 25%; top: -12rem; }
+    }
+    .testimonial-maud {
+      right: 0;
+      bottom: -3rem;
+      transform-origin: bottom right;
+    }
+    @media (min-width: 1024px) {
+      .testimonial-maud { bottom: -2.5rem; }
+    }
+    .testimonial-maud.pop-visible {
+      animation: popUpEffect 1.6s cubic-bezier(0.7, 0, 0.3, 1) forwards;
+      animation-delay: 0.2s;
+    }
+    .testimonial-souleymane {
+      right: 0;
+      top: -7.8rem;
+    }
+    @media (min-width: 1024px) {
+      .testimonial-souleymane { right: 5rem; top: -6rem; }
+    }
+    .testimonial-nicolas {
+      left: 0;
+      bottom: -8.2rem;
+    }
+    @media (min-width: 1024px) {
+      .testimonial-nicolas { left: 33%; bottom: -11rem; }
+    }
+
+    /* CTA card */
+    .team-cta {
+      position: relative;
+      display: block;
+      text-decoration: none;
+      color: #000;
+      transition: opacity 0.7s ease-in-out;
+    }
+    .team-cta:hover {
+      opacity: 0.8;
+    }
+    .team-cta-inner {
+      background-color: #f2f2f2;
+      padding: 2rem;
+      border-radius: 0.75rem;
+      width: 100%;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      gap: 0.5rem;
+      clip-path: polygon(100% 0, 100% 0, 100% 100%, 100% 100%);
+    }
+    .team-cta-inner.reveal-visible {
+      animation: rollFromRight 0.8s cubic-bezier(0.7, 0, 0.3, 1) forwards;
+    }
+    @media (min-width: 1024px) {
+      .team-cta-inner {
+        border-radius: 33px;
+      }
+    }
+    @media (min-width: 1280px) {
+      .team-cta-inner {
+        width: 66.666%;
+        padding: 2.5rem;
+      }
+    }
+    .team-cta-title {
+      font-family: 'Montserrat', Helvetica, Arial, sans-serif;
+      font-weight: 700;
+      font-size: 1.25rem;
+      line-height: 1;
+      margin: 0;
+    }
+    @media (min-width: 1024px) {
+      .team-cta-title {
+        font-size: 45px;
+      }
+    }
+    @media (min-width: 1280px) {
+      .team-cta-title {
+        font-size: 50px;
+      }
+    }
+
+    /* Team avatars */
+    .team-circle {
+      display: flex;
+      align-items: center;
+    }
+    .circle-pic {
+      width: 40px;
+      height: 40px;
+      border-radius: 9999px;
+      overflow: hidden;
+      border: 2px solid #000;
+      flex-shrink: 0;
+    }
+    @media (min-width: 1024px) {
+      .circle-pic {
+        width: 55px;
+        height: 55px;
+      }
+    }
+    .circle-pic + .circle-pic {
+      margin-left: -0.75rem;
+    }
+    .circle-pic img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top;
+      display: block;
+    }
+    .circle-plus {
+      background-color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .circle-plus img {
+      width: 14px !important;
+      height: 14px !important;
+      object-fit: contain;
+      object-position: center;
+    }
+
+    /* Pop-up keyframes */
+    @keyframes popUpEffect {
+      0%   { transform: scale(0); }
+      25%  { transform: scale(1.1); }
+      50%  { transform: scale(0.9); }
+      75%  { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    /* Clip-path reveal */
+    @keyframes rollFromRight {
+      from { clip-path: polygon(100% 0, 100% 0, 100% 100%, 100% 100%); }
+      to   { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
+    }
+
+    /* ---- Perspectives Section ---- */
+    .perspectives-section {
+      background-color: #fff;
+      border-bottom-left-radius: 1rem;
+      border-bottom-right-radius: 1rem;
+      padding: 5rem 0;
+      position: relative;
+      z-index: 10;
+    }
+    .perspectives-container {
+      max-width: 1400px;
+      padding: 0 1rem;
+      margin: 0 auto;
+    }
+    @media (min-width: 1280px) {
+      .perspectives-container { padding: 0; }
+    }
+    .perspectives-top {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .perspectives-left {
+      width: 100%;
+    }
+    @media (min-width: 1280px) {
+      .perspectives-left { width: 50%; }
+    }
+    .perspectives-heading {
+      font-family: 'Montserrat', Helvetica, Arial, sans-serif;
+      font-weight: 700;
+      color: #000;
+      font-size: 1.5rem;
+      line-height: 1;
+      margin: 0;
+    }
+    @media (min-width: 1024px) {
+      .perspectives-heading {
+        font-size: 45px;
+        width: 83.333%;
+      }
+    }
+    @media (min-width: 1280px) {
+      .perspectives-heading {
+        font-size: 50px;
+        margin: 0 auto;
+      }
+    }
+    .perspectives-right {
+      width: 100%;
+      margin-top: 2rem;
+    }
+    @media (min-width: 1280px) {
+      .perspectives-right {
+        width: 50%;
+        margin-top: 0;
+      }
+    }
+    .perspectives-right-inner {
+      width: 100%;
+    }
+    @media (min-width: 1280px) {
+      .perspectives-right-inner {
+        width: 83.333%;
+        margin: 0 auto;
+      }
+    }
+    .perspectives-desc {
+      color: #898c8a;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+    @media (min-width: 1024px) {
+      .perspectives-desc { width: 50%; }
+    }
+
+    /* Slider - Swipe */
+    .slider-container {
+      width: 100%;
+      overflow: hidden;
+      position: relative;
+      cursor: grab;
+    }
+    .slider-container:active {
+      cursor: grabbing;
+    }
+    .slider-container.swiping .articles-track {
+      transition: none;
+    }
+    .articles-track {
+      display: flex;
+      padding: 3.5rem 1rem 0;
+      gap: 1rem;
+      transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      user-select: none;
+      will-change: transform;
+    }
+    @media (min-width: 1280px) {
+      .articles-track { padding: 3.5rem 0 0; gap: 1rem; }
+    }
+
+    /* Lerp cursor */
+    .lerp-cursor {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 75px;
+      height: 75px;
+      border-radius: 9999px;
+      color: #fff;
+      background: rgba(13, 31, 26, 0.65);
+      backdrop-filter: blur(37px) brightness(0.99);
+      -webkit-backdrop-filter: blur(37px) brightness(0.99);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none !important;
+      transform-origin: center;
+      z-index: 9999;
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0);
+      transition: transform 0.2s ease, opacity 0.2s ease;
+      font-family: 'poppins', sans-serif;
+      font-size: 0.75rem;
+    }
+
+    /* Article card */
+    .article-card {
+      flex: 0 0 91.666%;
+      position: relative;
+    }
+    @media (min-width: 1024px) {
+      .article-card { flex: 0 0 48%; }
+    }
+    @media (min-width: 1280px) {
+      .article-card { flex: 0 0 24%; }
+    }
+    .article-card a {
+      display: block;
+      width: 100%;
+      height: 100%;
+      text-decoration: none;
+      color: #fff;
+    }
+    .article-card-inner {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      aspect-ratio: 9 / 10;
+      overflow: hidden;
+      background-color: #f2f2f2;
+      border-radius: 33px;
+      padding: 1.5rem;
+      transition: all 0.2s ease-in-out;
+    }
+    .article-card:hover .article-card-inner {
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1);
+    }
+    .article-card-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #000;
+      opacity: 0.5;
+      z-index: 1;
+    }
+    .article-card-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .article-card-bg img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .article-card-more {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      z-index: 10;
+    }
+    .article-card-more img {
+      width: 20px;
+      height: 20px;
+      object-fit: contain;
+      transition: transform 0.5s ease-in-out;
+    }
+    .article-card:hover .article-card-more img {
+      transform: rotate(-90deg);
+    }
+    .article-card-content {
+      position: relative;
+      z-index: 10;
+      margin-top: auto;
+    }
+    .article-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .article-tag {
+      font-size: 13px;
+      border: 1px solid #fff;
+      color: #fff;
+      padding: 0.25rem 0.5rem;
+      border-radius: 9999px;
+      white-space: nowrap;
+    }
+    .article-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #fff;
+      margin: 0;
+      font-family: 'poppins', sans-serif;
+    }
+
+    /* ---- Méthodologie Section ---- */
+    .methodologie-section {
+      padding: 5rem 0;
+      position: relative;
+      z-index: 0;
+    }
+    @media (min-width: 1280px) {
+      .methodologie-section {
+        padding: 13rem 0 8rem;
+      }
+    }
+    .methodologie-container {
+      max-width: 1400px;
+      padding: 0 1rem;
+      margin: 0 auto;
+      position: relative;
+      z-index: 10;
+    }
+    @media (min-width: 1280px) {
+      .methodologie-container { padding: 0; }
+    }
+    .methodologie-flex {
+      display: flex;
+      flex-wrap: wrap;
+    }
+    .methodologie-left {
+      width: 100%;
+    }
+    @media (min-width: 1280px) {
+      .methodologie-left { width: 50%; }
+    }
+    .methodologie-left-inner {
+      width: 100%;
+    }
+    @media (min-width: 1280px) {
+      .methodologie-left-inner { width: 83.333%; margin: 0 auto; }
+    }
+    @media (min-width: 1536px) {
+      .methodologie-left-inner { width: 66.666%; }
+    }
+    .methodologie-heading {
+      font-family: 'Montserrat', Helvetica, Arial, sans-serif;
+      font-weight: 700;
+      color: #fff;
+      font-size: 1.5rem;
+      line-height: 1;
+    }
+    @media (min-width: 1024px) {
+      .methodologie-heading { font-size: 45px; width: 83.333%; }
+    }
+    @media (min-width: 1280px) {
+      .methodologie-heading { font-size: 50px; width: 100%; }
+    }
+    .methodologie-desc {
+      color: #898c8a;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+    .methodologie-right {
+      width: 100%;
+      padding-top: 2.5rem;
+    }
+    @media (min-width: 1280px) {
+      .methodologie-right { width: 50%; padding-top: 0; }
+    }
+    .methodologie-image {
+      width: 100%;
+      height: 400px;
+      border-radius: 33px;
+      overflow: hidden;
+      position: relative;
+    }
+    @media (min-width: 1024px) {
+      .methodologie-image { height: 700px; }
+    }
+    .methodologie-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .methodologie-small-image {
+      width: 41.666%;
+      aspect-ratio: 1;
+      border-radius: 33px;
+      overflow: hidden;
+      position: relative;
+      margin-top: 2rem;
+    }
+    @media (min-width: 1024px) {
+      .methodologie-small-image { margin-top: 8rem; }
+    }
+    .methodologie-small-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Accordion */
+    .accordion-list {
+      list-style: none;
+      padding: 2.5rem 0;
+    }
+    .accordion-item {
+      margin-bottom: 0.5rem;
+      display: flex;
+      gap: 0.25rem;
+      align-items: stretch;
+    }
+    .accordion-icon {
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #f2f2f2;
+      border-radius: 0.375rem;
+      padding: 0.75rem;
+      flex-shrink: 0;
+    }
+    .accordion-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .accordion-content {
+      background-color: #f2f2f2;
+      border-radius: 0.375rem;
+      padding: 0 1rem;
+      margin: 0;
+      display: flex;
+      flex-grow: 1;
+      flex-direction: column;
+      width: 100%;
+    }
+    .accordion-header {
+      display: flex;
+      cursor: pointer;
+    }
+    .accordion-header h3 {
+      display: flex;
+      flex-grow: 1;
+      align-items: center;
+      font-size: 1.125rem;
+      padding: 0.5rem 0;
+      height: 50px;
+      font-weight: 400;
+      margin: 0;
+      color: #000;
+    }
+    .accordion-header .accordion-chevron {
+      display: flex;
+      align-items: center;
+    }
+    .accordion-chevron img {
+      width: 12px;
+      height: 12px;
+      object-fit: contain;
+      transition: transform 0.4s ease;
+    }
+    .accordion-item.open .accordion-chevron img {
+      transform: rotate(180deg);
+    }
+    .accordion-body {
+      overflow: hidden;
+      height: 0;
+      transition: height 0.4s ease;
+    }
+    .accordion-body p {
+      font-size: 0.875rem;
+      color: #464b47;
+      padding: 0 0 1.25rem;
+      margin: 0;
+    }
+
+    /* ---- Formations Section ---- */
+    .formations-section {
+      padding: 5rem 0;
+      position: relative;
+      z-index: 10;
+    }
+    .formations-container {
+      max-width: 1400px;
+      padding: 0 1rem;
+      margin: 0 auto;
+    }
+    @media (min-width: 1280px) {
+      .formations-container { padding: 0; }
+    }
+    .formations-flex {
+      display: flex;
+      flex-wrap: wrap;
+    }
+    .formations-left {
+      width: 100%;
+    }
+    @media (min-width: 1280px) {
+      .formations-left { width: 50%; }
+    }
+    .formations-left-inner {
+      width: 100%;
+    }
+    @media (min-width: 1280px) {
+      .formations-left-inner { width: 83.333%; margin: 0 auto; }
+    }
+    @media (min-width: 1536px) {
+      .formations-left-inner { width: 66.666%; }
+    }
+    .formations-heading {
+      font-family: 'Montserrat', Helvetica, Arial, sans-serif;
+      font-weight: 700;
+      color: #fff;
+      font-size: 1.5rem;
+      line-height: 1;
+    }
+    @media (min-width: 1024px) {
+      .formations-heading { font-size: 45px; }
+    }
+    @media (min-width: 1280px) {
+      .formations-heading { font-size: 50px; }
+    }
+    .formations-desc {
+      color: #898c8a;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+    .formations-right {
+      width: 100%;
+      padding-top: 2.5rem;
+    }
+    @media (min-width: 1280px) {
+      .formations-right { width: 50%; padding-top: 0; }
+    }
+    .formations-right-inner {
+      width: 100%;
+    }
+    @media (min-width: 1536px) {
+      .formations-right-inner { width: 83.333%; margin: 0 auto; }
+    }
+
+    /* Formation pill cards */
+    .formation-pill {
+      display: block;
+      text-decoration: none;
+      color: #000;
+      margin-bottom: 1rem;
+    }
+    .formation-pill-inner {
+      background-color: #1a8a6e;
+      width: 100%;
+      padding: 1rem;
+      border-radius: 9999px;
+      font-size: 1.125rem;
+      transition: background-color 0.2s ease-in-out, width 0.2s ease-in-out;
+    }
+    @media (min-width: 1024px) {
+      .formation-pill-inner.pill-wide { width: 83.333%; }
+      .formation-pill-inner.pill-narrow { width: 66.666%; }
+    }
+    .formation-pill:hover .formation-pill-inner {
+      background-color: #fff;
+      width: 100%;
+    }
+    .formation-pill-flex {
+      display: flex;
+      align-items: center;
+    }
+    .formation-pill-text {
+      width: 91.666%;
+      margin: 0;
+    }
+    .formation-pill-icon {
+      width: 8.333%;
+      display: flex;
+      justify-content: center;
+    }
+    .formation-pill-icon img {
+      width: 12px;
+      height: 12px;
+      object-fit: contain;
+      transition: transform 0.5s ease-in-out;
+    }
+    .formation-pill:hover .formation-pill-icon img {
+      transform: rotate(-90deg);
+    }
+
+    /* ---- CTA Footer Card ---- */
+    .footer-cta {
+      background-color: #0d1f1a;
+      padding-top: 5rem;
+      position: relative;
+      z-index: 10;
+    }
+    .footer-cta-container {
+      max-width: 1400px;
+      padding: 0 1rem;
+      margin: 0 auto;
+    }
+    @media (min-width: 1280px) {
+      .footer-cta-container { padding: 0; }
+    }
+    .cta-card {
+      background-color: #f2f2f2;
+      padding: 0.5rem;
+      border-radius: 0.75rem;
+      display: flex;
+      flex-wrap: wrap;
+    }
+    @media (min-width: 1024px) {
+      .cta-card { padding: 2rem; }
+    }
+    .cta-card-left {
+      width: 100%;
+      padding: 1.25rem 1rem;
+    }
+    @media (min-width: 1280px) {
+      .cta-card-left { width: 33.333%; padding: 2.5rem 0; }
+    }
+    .cta-card-left h2 {
+      font-family: 'Montserrat', Helvetica, Arial, sans-serif;
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: #000;
+      margin: 0;
+    }
+    @media (min-width: 1024px) {
+      .cta-card-left h2 { font-size: 40px; }
+    }
+    .cta-card-right {
+      width: 100%;
+    }
+    @media (min-width: 1280px) {
+      .cta-card-right { width: 66.666%; }
+    }
+    .cta-sub-cards {
+      display: flex;
+      flex-wrap: wrap;
+    }
+    .cta-newsletter {
+      width: 100%;
+      background-color: #fff;
+      border-radius: 0.75rem;
+      display: flex;
+      flex-direction: column;
+      padding: 1rem;
+    }
+    @media (min-width: 1280px) {
+      .cta-newsletter { width: 50%; aspect-ratio: 16/9; padding: 1rem; }
+    }
+    .cta-newsletter h3 {
+      font-family: 'Roboto', sans-serif;
+      font-weight: 500;
+      font-size: 1.125rem;
+      color: #000;
+      margin: 0 0 2rem;
+      line-height: 1.4;
+    }
+    @media (min-width: 1024px) {
+      .cta-newsletter h3 { font-size: 1.25rem; width: 83.333%; }
+    }
+    .cta-newsletter .newsletter-form {
+      margin-top: auto;
+      display: flex;
+      background-color: #f2f2f2;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .newsletter-form input[type="email"] {
+      width: 60%;
+      padding: 0.75rem 1rem;
+      border: none;
+      background-color: #f2f2f2;
+      color: #2b312c;
+      font-size: 1rem;
+      outline: none;
+      font-family: 'poppins', sans-serif;
+    }
+    .newsletter-form input[type="email"]::placeholder {
+      color: #898c8a;
+    }
+    .newsletter-form button {
+      width: 40%;
+      padding: 0.75rem;
+      border: none;
+      background-color: #0d1f1a;
+      color: #fff;
+      border-radius: 9999px;
+      font-size: 1rem;
+      cursor: pointer;
+      font-family: 'poppins', sans-serif;
+      transition: all 0.25s ease-in-out;
+    }
+    .newsletter-form button:hover {
+      background-color: #22b88f;
+      color: #2b312c;
+    }
+    .cta-green {
+      width: 100%;
+      background-color: #1a8a6e;
+      border-radius: 0.75rem;
+      padding: 1rem;
+      padding-bottom: 7rem;
+      position: relative;
+      text-decoration: none;
+      color: #000;
+      display: block;
+    }
+    @media (min-width: 1280px) {
+      .cta-green { width: 50%; aspect-ratio: 16/9; padding: 1rem; padding-bottom: 1rem; }
+    }
+    .cta-green h3 {
+      font-family: 'Roboto', sans-serif;
+      font-weight: 500;
+      font-size: 1.125rem;
+      margin: 0;
+      line-height: 1.4;
+    }
+    @media (min-width: 1024px) {
+      .cta-green h3 { font-size: 1.25rem; width: 66.666%; }
+    }
+    .cta-green .cta-plus {
+      position: absolute;
+      bottom: 1.25rem;
+      right: 1.25rem;
+    }
+    .cta-green .cta-plus img {
+      width: 12px;
+      height: 12px;
+      transition: transform 0.5s ease-in-out;
+    }
+    .cta-green:hover .cta-plus img {
+      transform: rotate(-90deg);
+    }
+
+    /* Datavore banner */
+    .datavore-banner {
+      display: flex;
+      align-items: center;
+      background-color: #000;
+      padding: 1rem;
+      border-radius: 0.75rem;
+      margin-top: 0.5rem;
+      text-decoration: none;
+      color: #fff;
+    }
+    @media (min-width: 1024px) {
+      .datavore-banner { padding: 2.5rem; }
+    }
+    .datavore-banner img.datavore-logo {
+      width: 16.666%;
+      height: auto;
+    }
+    .datavore-banner h3 {
+      font-weight: 400;
+      font-size: 1.125rem;
+      margin: 0;
+      padding-left: 1rem;
+    }
+    @media (min-width: 1024px) {
+      .datavore-banner h3 { font-size: 1.25rem; }
+    }
+
+    /* ---- Footer ---- */
+    .site-footer {
+      background-color: #0d1f1a;
+      position: relative;
+      z-index: 10;
+    }
+    .footer-nav {
+      max-width: 1400px;
+      padding: 5rem 1rem;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+    }
+    @media (min-width: 1280px) {
+      .footer-nav { padding: 5rem 0; }
+    }
+    .footer-logo {
+      width: 100%;
+    }
+    @media (min-width: 1024px) {
+      .footer-logo { width: 58.333%; }
+    }
+    .footer-logo img {
+      width: 8.333%;
+      min-width: 40px;
+    }
+    .footer-links-wrap {
+      width: 100%;
+    }
+    @media (min-width: 1024px) {
+      .footer-links-wrap { width: 25%; }
+    }
+    .footer-links {
+      width: 100%;
+      padding: 2.5rem 0;
+      list-style: none;
+    }
+    @media (min-width: 1024px) {
+      .footer-links { padding: 0; }
+    }
+    .footer-links li {
+      margin-bottom: 0.5rem;
+    }
+    .footer-links li a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 1rem;
+      transition: opacity 0.3s;
+    }
+    .footer-links li a:hover {
+      opacity: 0.6;
+    }
+    .footer-social {
+      width: 100%;
+      display: flex;
+    }
+    @media (min-width: 1024px) {
+      .footer-social { width: 16.666%; justify-content: flex-end; }
+    }
+    .footer-social ul {
+      display: flex;
+      gap: 0.75rem;
+      list-style: none;
+    }
+    .footer-social img {
+      width: 25px;
+      height: 25px;
+    }
+    .footer-bottom {
+      max-width: 1400px;
+      padding: 0 1rem 2.5rem;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+    }
+    @media (min-width: 1280px) {
+      .footer-bottom { padding: 0 0 2.5rem; }
+    }
+    .footer-bottom a {
+      color: #898c8a;
+      text-decoration: none;
+      font-size: 0.75rem;
+    }
+    .footer-bottom span {
+      color: #898c8a;
+      font-size: 0.75rem;
+    }
+    .footer-bottom-left {
+      width: 58.333%;
+    }
+    .footer-bottom-right {
+      width: 41.666%;
+    }
+
+    /* ---- Article Modal ---- */
+    .article-modal-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 10000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      cursor: pointer;
+    }
+    .article-modal-overlay.active {
+      display: flex;
+    }
+    .article-modal {
+      background: #111;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 24px;
+      max-width: 720px;
+      width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+      cursor: default;
+      position: relative;
+    }
+    .article-modal-img {
+      width: 100%;
+      height: 280px;
+      object-fit: cover;
+      border-radius: 24px 24px 0 0;
+      display: block;
+    }
+    .article-modal-body {
+      padding: 2rem 2.5rem 2.5rem;
+    }
+    .article-modal-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .article-modal-tag {
+      font-size: 13px;
+      border: 1px solid #1a8a6e;
+      color: #1a8a6e;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+    }
+    .article-modal-title {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: #fff;
+      margin: 0 0 1.25rem;
+      line-height: 1.3;
+    }
+    .article-modal-text {
+      color: rgba(255,255,255,0.65);
+      font-size: 0.95rem;
+      line-height: 1.8;
+      margin: 0;
+    }
+    .article-modal-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      width: 40px;
+      height: 40px;
+      border-radius: 9999px;
+      background: rgba(0,0,0,0.6);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      transition: background 0.2s;
+    }
+    .article-modal-close:hover {
+      background: rgba(0,0,0,0.9);
+    }
+    @media (max-width: 768px) {
+      .article-modal-body { padding: 1.5rem; }
+      .article-modal-title { font-size: 1.25rem; }
+      .article-modal-img { height: 200px; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ============ Preloader (Bloomberg Terminal) ============ -->
+  <div class="preloader" id="preloader">
+    <div class="pre-flash" id="preFlash"></div>
+    <!-- Background ticker rows -->
+    <div class="pre-terminal" id="preTerminal"></div>
+    <!-- Center -->
+    <div class="pre-center">
+      <div class="pre-numbers" id="preNumbers"></div>
+      <div class="pre-brand" id="preBrand">
+        <span class="pre-brand-one">ONE</span>&nbsp;<span class="pre-brand-share">SHARE</span>
+      </div>
+      <div class="pre-tagline" id="preTagline">SINGAPORE &nbsp;·&nbsp; CAPITAL MARKETS</div>
+    </div>
+    <!-- Bottom data -->
+    <div class="pre-data-strip" id="preDataStrip">
+      <div class="pre-data-item" style="animation-delay:0s"><div class="pre-data-val" data-target="50">00</div><div class="pre-data-label">Clients</div></div>
+      <div class="pre-data-item" style="animation-delay:0.1s"><div class="pre-data-val" data-target="5">0</div><div class="pre-data-label">Countries</div></div>
+      <div class="pre-data-item" style="animation-delay:0.2s"><div class="pre-data-val" data-target="10">00</div><div class="pre-data-label">Years</div></div>
+      <div class="pre-data-item" style="animation-delay:0.3s"><div class="pre-data-val" data-target="3">0</div><div class="pre-data-label">Services</div></div>
+    </div>
+  </div>
+
+  <!-- ============ WebGL Canvas (aurora + particles) ============ -->
+  <canvas id="webgl"></canvas>
+
+  <!-- ============ Announcement Banner ============ -->
+  <div class="head-banner" id="headBanner">
+    <div class="head-banner__container">
+      <div class="head-banner__container-left">
+        <div class="head-banner__container-text">
+          <h3 class="head-banner__text" data-zh="ONE SHARE (SINGAPORE) · 综合资本市场服务" data-en="ONE SHARE (SINGAPORE) · Integrated Capital Market Services">ONE SHARE (SINGAPORE) · 综合资本市场服务</h3>
+        </div>
+      </div>
+      <a class="head-banner__link" href="#contact" data-zh="了解更多" data-en="Learn More">了解更多</a>
+      <button class="head-banner__off" id="closeBanner" aria-label="关闭">
+        <svg xmlns="http://www.w3.org/2000/svg" width="9.27" height="9.27" viewBox="0 0 9.27 9.27">
+          <g transform="translate(4.635 -1.806) rotate(45)" opacity="0.5">
+            <line x1="9.109" transform="translate(0 4.555)" fill="none" stroke="#f7f7f7" stroke-linecap="round" stroke-width="2" />
+            <line x1="9.109" transform="translate(4.555 0) rotate(90)" fill="none" stroke="#f7f7f7" stroke-linecap="round" stroke-width="2" />
+          </g>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <header class="header">
+    <div class="header-desktop">
+      <nav>
+        <div class="nav-flex">
+          <div class="logo-wrap">
+            <a href="#hero"><img src="oneshare.png" alt="ONE SHARE"></a>
+          </div>
+          <div class="nav-right">
+            <ul class="nav-menu">
+              <li><a href="#hero" data-zh="首页" data-en="Home">首页</a></li>
+              <li><a href="#services" data-zh="我们与服务" data-en="About &amp; Services">我们与服务</a></li>
+              <li><a href="#insights" data-zh="新闻与洞察" data-en="News &amp; Insights">新闻与洞察</a></li>
+              <li><a href="#contact" data-zh="联系我们" data-en="Contact Us">联系我们</a></li>
+              <li>
+                <div style="display:inline-flex;align-items:center;gap:4px;background:rgba(255,255,255,0.15);border-radius:20px;padding:3px;">
+                  <button class="os-lang-btn" data-lang="zh" style="padding:5px 10px;border:none;cursor:pointer;border-radius:16px;font-size:11px;font-weight:600;background:#fff;color:#0d1f1a;transition:0.2s;">中文</button>
+                  <button class="os-lang-btn" data-lang="en" style="padding:5px 10px;border:none;cursor:pointer;border-radius:16px;font-size:11px;font-weight:600;background:transparent;color:rgba(255,255,255,0.6);transition:0.2s;">EN</button>
+                </div>
+              </li>
+              <a href="#contact" class="btn" title="预约沟通">
+                <div class="btn-label"><span data-zh="预约沟通" data-en="Schedule a Call">预约沟通</span></div>
+                <div class="button_circle">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0d1f1a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </div>
+              </a>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </div>
+    <div class="mobile-header">
+      <div class="mobile-logo-wrap">
+        <a href="#hero"><img src="oneshare.png" alt="ONE SHARE" /></a>
+      </div>
+      <div class="mobile-nav-right">
+        <button class="mobile-burger" data-menu-open>
+          <div class="burger-line-menu">
+            <div class="burger-line"></div>
+            <div class="burger-line"></div>
+          </div>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ Main Content ============ -->
+  <div class="page-wrapper">
+    <main role="main">
+      <div class="relative-bg">
+        <div class="main-content">
+
+          <!-- Hero Section -->
+          <section class="hero-section" id="hero">
+            <div class="hero-image fade-in fade-in-delay-3" id="heroImage">
+              <div class="hero-image-inner">
+                <img src="https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&w=1400&q=80" alt="Singapore Skyline">
+              </div>
+            </div>
+            <div class="hero-flex">
+              <div class="hero-left fade-in fade-in-delay-2 fade-el-scroll">
+                <div class="hero-left-inner">
+                  <p class="hero-description" data-zh="ONE SHARE 围绕投资者关系管理、股权激励执行与跨境资本整合，协助企业提升市场认知与资本结构效率，构建长期且可持续的价值路径。" data-en="ONE SHARE focuses on investor relations management, equity incentive execution, and cross-border capital integration — helping companies enhance market recognition, optimize capital structure efficiency, and build a long-term, sustainable value path.">ONE SHARE 围绕投资者关系管理、股权激励执行与跨境资本整合，协助企业提升市场认知与资本结构效率，构建长期且可持续的价值路径。</p>
+                  <div>
+                    <a href="#services" class="btn" title="了解更多">
+                      <div class="btn-label"><span data-zh="了解更多" data-en="Learn More">了解更多</span></div>
+                      <div class="button_circle">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0d1f1a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <div class="hero-right fade-in fade-in-delay-1 fade-el-scroll">
+                <h1 class="hero-heading" data-zh="当每一股都被正确理解，企业价值才真正被看见。" data-en="When every share is truly understood, enterprise value is truly seen.">当每一股都被正确理解，企业价值才真正被看见。</h1>
+              </div>
+            </div>
+          </section>
+          <div class="video-scroll-spacer" id="videoScrollSpacer"></div>
+
+          <!-- Stats Section -->
+          <section class="stats-section">
+            <section class="stats-inner" id="statsInner">
+              <h2 class="stats-heading">
+                <span data-zh="构建可验证的" data-en="Building verifiable">构建可验证的</span>
+                <span class="green-pill">
+                  <span class="pill-content">
+                    <span class="pill-number">50+</span>
+                    <span class="pill-text" data-zh="企业客户" data-en="Enterprise Clients">企业客户</span>
+                  </span>
+                </span>
+                <span data-zh="资本叙事" data-en="capital narratives">资本叙事</span>
+                <span class="green-pill">
+                  <span class="pill-content">
+                    <span class="pill-number">5+</span>
+                    <span class="pill-text" data-zh="覆盖国家" data-en="Countries Covered">覆盖国家</span>
+                  </span>
+                </span>
+                <span data-zh="让市场" data-en="for markets to">让市场</span>
+                <span class="green-pill">
+                  <span class="pill-content">
+                    <span class="pill-number">10+</span>
+                    <span class="pill-text" data-zh="年行业经验" data-en="Years Experience">年行业经验</span>
+                  </span>
+                </span>
+                <span data-zh="真正理解企业" data-en="truly understand">真正理解企业</span>
+                <span class="green-pill">
+                  <span class="pill-content">
+                    <span class="pill-number">3</span>
+                    <span class="pill-text" data-zh="核心服务线" data-en="Core Services">核心服务线</span>
+                  </span>
+                </span>
+                <span data-zh="的核心价值" data-en="the core value">的核心价值</span>
+              </h2>
+            </section>
+
+            <!-- White section with expertise cards -->
+            <div class="white-section" id="services">
+              <div class="container-inner">
+                <h2 class="expertise-title scroll-reveal" data-splitting="words" data-splitting-waterfall data-zh="构建资本可见性架构" data-en="Building a Capital Visibility Architecture">构建资本可见性架构</h2>
+
+                <div class="cards-expertises">
+                  <div class="expertises-container" style="--cards-count: 3;">
+
+                    <!-- Card 0: 投资者关系与市场沟通 -->
+                    <div class="expertise-card" style="background-color: #FAF7F7; top:50px">
+                      <div class="card-flex">
+                        <div class="card-left">
+                          <h3 class="card-title" data-splitting="words" data-zh="投资者关系与市场沟通" data-en="Investor Relations & Market Communication">投资者关系与市场沟通</h3>
+                          <p class="card-desc anim-fade" data-zh="我们帮助企业设计稳定、连续的资本信号输出体系，让市场持续理解企业价值。通过结构化的信息披露、定期的投资者互动和精准的市场沟通策略，建立长期信任。" data-en="We help companies design a stable, continuous capital signal output system so the market consistently understands enterprise value. Through structured disclosure, regular investor interactions, and precise communication strategies, we build long-term trust.">我们帮助企业设计稳定、连续的资本信号输出体系，让市场持续理解企业价值。通过结构化的信息披露、定期的投资者互动和精准的市场沟通策略，建立长期信任。</p>
+                          <a href="#contact" class="btn">
+                            <div class="btn-label anim-clip-right"><span data-zh="了解更多" data-en="Learn More">了解更多</span></div>
+                            <div class="button_circle anim-pop">
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0d1f1a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                            </div>
+                          </a>
+                          <ul class="card-tags">
+                            <li><span class="tag-icon anim-clip-left"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span><span class="tag-text anim-clip-left" data-zh="信息披露策略" data-en="Disclosure Strategy">信息披露策略</span></li>
+                            <li><span class="tag-icon anim-clip-left"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="tag-text anim-clip-left" data-zh="投资者互动管理" data-en="Investor Engagement">投资者互动管理</span></li>
+                            <li><span class="tag-icon anim-clip-left"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span><span class="tag-text anim-clip-left" data-zh="市场信号设计" data-en="Market Signal Design">市场信号设计</span></li>
+                          </ul>
+                        </div>
+                        <div class="card-right">
+                          <div class="anim-fade"><svg width="200" height="200" viewBox="0 0 200 200" fill="none"><circle cx="100" cy="100" r="80" stroke="#1a8a6e" stroke-width="2" opacity="0.3"/><circle cx="100" cy="100" r="50" stroke="#1a8a6e" stroke-width="2" opacity="0.5"/><circle cx="100" cy="100" r="20" fill="#1a8a6e" opacity="0.2"/><path d="M60 140 L100 60 L140 140" stroke="#1a8a6e" stroke-width="3" fill="none"/></svg></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Card 1: 股权激励与交易执行 -->
+                    <div class="expertise-card" style="background-color: #FAF7F7; top:70px">
+                      <div class="card-flex">
+                        <div class="card-left">
+                          <h3 class="card-title" data-splitting="words" data-zh="股权激励与交易执行" data-en="Equity Incentives & Trade Execution">股权激励与交易执行</h3>
+                          <p class="card-desc anim-fade" data-zh="协调内部股权结构与外部资本认知的一致性，为企业提供从方案设计到落地执行的全流程服务。确保激励机制与公司战略、资本节奏同频。" data-en="Aligning internal equity structure with external capital perception, providing end-to-end services from scheme design to execution. Ensuring incentive mechanisms synchronize with company strategy and capital rhythm.">协调内部股权结构与外部资本认知的一致性，为企业提供从方案设计到落地执行的全流程服务。确保激励机制与公司战略、资本节奏同频。</p>
+                          <a href="#contact" class="btn">
+                            <div class="btn-label anim-clip-right"><span data-zh="了解更多" data-en="Learn More">了解更多</span></div>
+                            <div class="button_circle anim-pop">
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0d1f1a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                            </div>
+                          </a>
+                          <ul class="card-tags">
+                            <li><span class="tag-icon anim-clip-left"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></span><span class="tag-text anim-clip-left" data-zh="股权方案设计" data-en="Equity Scheme Design">股权方案设计</span></li>
+                            <li><span class="tag-icon anim-clip-left"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span><span class="tag-text anim-clip-left" data-zh="交易结构优化" data-en="Transaction Optimization">交易结构优化</span></li>
+                            <li><span class="tag-icon anim-clip-left"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span><span class="tag-text anim-clip-left" data-zh="合规执行管理" data-en="Compliance Management">合规执行管理</span></li>
+                          </ul>
+                        </div>
+                        <div class="card-right">
+                          <div class="anim-fade"><svg width="200" height="200" viewBox="0 0 200 200" fill="none"><rect x="30" y="30" width="140" height="140" rx="10" stroke="#1a8a6e" stroke-width="2" opacity="0.3"/><line x1="30" y1="100" x2="170" y2="100" stroke="#1a8a6e" stroke-width="1" opacity="0.2"/><line x1="100" y1="30" x2="100" y2="170" stroke="#1a8a6e" stroke-width="1" opacity="0.2"/><path d="M50 130 L80 90 L110 110 L150 60" stroke="#1a8a6e" stroke-width="3" fill="none" stroke-linecap="round"/></svg></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Card 2: 跨境上市与资本整合 -->
+                    <div class="expertise-card" style="background-color: #FAF7F7; top:90px">
+                      <div class="card-flex">
+                        <div class="card-left">
+                          <h3 class="card-title" data-splitting="words" data-zh="跨境上市与资本整合" data-en="Cross-border Listing & Capital Integration">跨境上市与资本整合</h3>
+                          <p class="card-desc anim-fade" data-zh="规划企业在不同市场阶段的资本路径安排，覆盖从Pre-IPO到上市后的完整生命周期。整合新加坡、香港、美国等多市场资源，打通跨境资本通道。" data-en="Planning the company's capital path across different market stages, covering the full lifecycle from Pre-IPO to post-listing. Integrating multi-market resources across Singapore, Hong Kong, and the US to open cross-border capital channels.">规划企业在不同市场阶段的资本路径安排，覆盖从Pre-IPO到上市后的完整生命周期。整合新加坡、香港、美国等多市场资源，打通跨境资本通道。</p>
+                          <a href="#contact" class="btn">
+                            <div class="btn-label anim-clip-right"><span data-zh="了解更多" data-en="Learn More">了解更多</span></div>
+                            <div class="button_circle anim-pop">
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0d1f1a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                            </div>
+                          </a>
+                          <ul class="card-tags">
+                            <li><span class="tag-icon anim-clip-left"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span><span class="tag-text anim-clip-left" data-zh="上市路径规划" data-en="IPO Path Planning">上市路径规划</span></li>
+                            <li><span class="tag-icon anim-clip-left"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span><span class="tag-text anim-clip-left" data-zh="跨境资本架构" data-en="Cross-border Structure">跨境资本架构</span></li>
+                            <li><span class="tag-icon anim-clip-left"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span><span class="tag-text anim-clip-left" data-zh="多市场资源整合" data-en="Multi-market Integration">多市场资源整合</span></li>
+                          </ul>
+                        </div>
+                        <div class="card-right">
+                          <div class="anim-fade"><svg width="200" height="200" viewBox="0 0 200 200" fill="none"><circle cx="70" cy="100" r="40" stroke="#1a8a6e" stroke-width="2" opacity="0.3"/><circle cx="130" cy="100" r="40" stroke="#1a8a6e" stroke-width="2" opacity="0.3"/><path d="M100 72 L100 128" stroke="#1a8a6e" stroke-width="2" opacity="0.5"/><circle cx="100" cy="60" r="15" stroke="#1a8a6e" stroke-width="2" opacity="0.4"/></svg></div>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Team / Testimonials Section -->
+          <section class="teams-section">
+            <div class="teams-container">
+
+              <div class="testimonial testimonial-francine" style="background-color:#1a8a6e;">
+                <p class="quote-text" data-zh=""ONE SHARE 帮助我们建立了清晰的投资者沟通渠道，市场认知度显著提升。"" data-en=""ONE SHARE helped us build clear investor communication channels, significantly improving market recognition."">"ONE SHARE 帮助我们建立了清晰的投资者沟通渠道，市场认知度显著提升。"</p>
+                <p class="quote-name" data-zh="— 某上市公司 CFO" data-en="— CFO, Listed Company">— 某上市公司 CFO</p>
+              </div>
+
+              <div class="testimonial testimonial-myriam" style="background-color:#1a8a6e;">
+                <p class="quote-text" data-zh=""他们对资本市场的深度理解，让我们的跨境上市过程非常顺畅。"" data-en=""Their deep understanding of capital markets made our cross-border listing process exceptionally smooth."">"他们对资本市场的深度理解，让我们的跨境上市过程非常顺畅。"</p>
+                <p class="quote-name" data-zh="— 某科技企业创始人" data-en="— Founder, Tech Company">— 某科技企业创始人</p>
+              </div>
+
+              <div class="testimonial testimonial-souleymane" style="background-color:#157a5f;">
+                <p class="quote-text" data-zh=""专业、高效、值得信赖的资本市场合作伙伴。"" data-en=""Professional, efficient, and trustworthy capital market partners."">"专业、高效、值得信赖的资本市场合作伙伴。"</p>
+                <p class="quote-name" data-zh="— 某基金管理人" data-en="— Fund Manager">— 某基金管理人</p>
+              </div>
+
+              <a class="team-cta" href="#contact">
+                <div class="team-cta-inner">
+                  <h3 class="team-cta-title scroll-reveal" data-zh="与我们对话" data-en="Talk to Us">与我们对话</h3>
+                  <div class="team-circle">
+                    <div class="circle-pic" style="background:#1a8a6e;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:16px;">O</div>
+                    <div class="circle-pic" style="background:#14705a;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:16px;">N</div>
+                    <div class="circle-pic" style="background:#157a5f;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:16px;">E</div>
+                    <div class="circle-pic circle-plus" style="background:#fff;display:flex;align-items:center;justify-content:center;">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0d1f1a" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    </div>
+                  </div>
+                </div>
+              </a>
+
+              <div class="testimonial testimonial-maud" style="background-color:#1a8a6e;">
+                <p class="quote-text" data-zh=""ONE SHARE 的股权激励方案设计精准，团队执行力很强。"" data-en=""ONE SHARE's equity incentive scheme design is precise, and the team's execution is outstanding."">"ONE SHARE 的股权激励方案设计精准，团队执行力很强。"</p>
+                <p class="quote-name" data-zh="— 某新经济公司 CEO" data-en="— CEO, New Economy Company">— 某新经济公司 CEO</p>
+              </div>
+
+              <div class="testimonial testimonial-nicolas" style="background-color:#157a5f;">
+                <p class="quote-text" data-zh=""在资本路径设计方面，他们的视野和经验令人印象深刻。"" data-en=""Their vision and experience in capital path design is truly impressive."">"在资本路径设计方面，他们的视野和经验令人印象深刻。"</p>
+                <p class="quote-name" data-zh="— 某投资机构合伙人" data-en="— Partner, Investment Firm">— 某投资机构合伙人</p>
+              </div>
+
+            </div>
+          </section>
+
+          <!-- Perspectives Section -->
+          <section class="perspectives-section" id="insights">
+            <div class="perspectives-container">
+              <div class="perspectives-top">
+                <div class="perspectives-left">
+                  <h2 class="perspectives-heading scroll-reveal" data-zh="资本市场不奖励噪音，它奖励可持续的信号。" data-en="Capital markets don't reward noise. They reward sustainable signals.">资本市场不奖励噪音，它奖励可持续的信号。</h2>
+                </div>
+                <div class="perspectives-right">
+                  <div class="perspectives-right-inner">
+                    <p class="perspectives-desc scroll-reveal scroll-reveal-delay-1" data-zh="我们持续分享对资本市场、投资者关系与企业价值管理的深度思考与实践洞察。" data-en="We continuously share deep insights and practical perspectives on capital markets, investor relations, and enterprise value management.">我们持续分享对资本市场、投资者关系与企业价值管理的深度思考与实践洞察。</p>
+                    <a href="#contact" class="btn" title="查看更多">
+                      <div class="btn-label"><span data-zh="查看更多" data-en="View All">查看更多</span></div>
+                      <div class="button_circle">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0d1f1a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="slider-container cursor-target" id="perspectivesSlider" data-cursor-text="拖动">
+              <div class="articles-track" id="articlesTrack">
+
+                <div class="article-card" data-article="0">
+                  <a href="javascript:void(0)">
+                    <div class="article-card-inner">
+                      <div class="article-card-overlay"></div>
+                      <div class="article-card-bg"><img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80" alt=""></div>
+                      <div class="article-card-more">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                      </div>
+                      <div class="article-card-content">
+                        <div class="article-tags">
+                          <span class="article-tag" data-zh="资本市场" data-en="Capital Markets">资本市场</span>
+                        </div>
+                        <h3 class="article-title" data-zh="信息贬值时代：企业如何建立结构化资本叙事" data-en="The Age of Information Depreciation: How Companies Build Structured Capital Narratives">信息贬值时代：企业如何建立结构化资本叙事</h3>
+                      </div>
+                    </div>
+                  </a>
+                </div>
+
+                <div class="article-card" data-article="1">
+                  <a href="javascript:void(0)">
+                    <div class="article-card-inner">
+                      <div class="article-card-overlay"></div>
+                      <div class="article-card-bg"><img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=800&q=80" alt=""></div>
+                      <div class="article-card-more">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                      </div>
+                      <div class="article-card-content">
+                        <div class="article-tags">
+                          <span class="article-tag" data-zh="投资者关系" data-en="Investor Relations">投资者关系</span>
+                        </div>
+                        <h3 class="article-title" data-zh="从增长叙事到结构可验证性：资本市场的范式转移" data-en="From Growth Narratives to Structural Verifiability: A Capital Market Paradigm Shift">从增长叙事到结构可验证性：资本市场的范式转移</h3>
+                      </div>
+                    </div>
+                  </a>
+                </div>
+
+                <div class="article-card" data-article="2">
+                  <a href="javascript:void(0)">
+                    <div class="article-card-inner">
+                      <div class="article-card-overlay"></div>
+                      <div class="article-card-bg"><img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=800&q=80" alt=""></div>
+                      <div class="article-card-more">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                      </div>
+                      <div class="article-card-content">
+                        <div class="article-tags">
+                          <span class="article-tag" data-zh="股权激励" data-en="Equity Incentives">股权激励</span>
+                        </div>
+                        <h3 class="article-title" data-zh="股权激励设计的三个关键维度" data-en="Three Key Dimensions of Equity Incentive Design">股权激励设计的三个关键维度</h3>
+                      </div>
+                    </div>
+                  </a>
+                </div>
+
+                <div class="article-card" data-article="3">
+                  <a href="javascript:void(0)">
+                    <div class="article-card-inner">
+                      <div class="article-card-overlay"></div>
+                      <div class="article-card-bg"><img src="https://images.unsplash.com/photo-1496939376851-89342e90adcd?auto=format&fit=crop&w=800&q=80" alt=""></div>
+                      <div class="article-card-more">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                      </div>
+                      <div class="article-card-content">
+                        <div class="article-tags">
+                          <span class="article-tag" data-zh="跨境上市" data-en="Cross-border Listing">跨境上市</span>
+                          <span class="article-tag" data-zh="新加坡" data-en="Singapore">新加坡</span>
+                        </div>
+                        <h3 class="article-title" data-zh="新加坡作为亚洲资本枢纽的战略价值" data-en="Singapore's Strategic Value as Asia's Capital Hub">新加坡作为亚洲资本枢纽的战略价值</h3>
+                      </div>
+                    </div>
+                  </a>
+                </div>
+
+                <div class="article-card" data-article="4">
+                  <a href="javascript:void(0)">
+                    <div class="article-card-inner">
+                      <div class="article-card-overlay"></div>
+                      <div class="article-card-bg"><img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=800&q=80" alt=""></div>
+                      <div class="article-card-more">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                      </div>
+                      <div class="article-card-content">
+                        <div class="article-tags">
+                          <span class="article-tag" data-zh="市场沟通" data-en="Market Communication">市场沟通</span>
+                        </div>
+                        <h3 class="article-title" data-zh="沉默等于被边缘化：AI 时代的企业信息策略" data-en="Silence Equals Marginalization: Corporate Information Strategy in the AI Era">沉默等于被边缘化：AI 时代的企业信息策略</h3>
+                      </div>
+                    </div>
+                  </a>
+                </div>
+
+              </div>
+            </div>
+          </section>
+
+          <!-- Méthodologie Section -->
+          <section class="methodologie-section">
+            <div class="methodologie-container">
+              <div class="methodologie-flex">
+                <div class="methodologie-left">
+                  <div class="methodologie-left-inner">
+                    <h2 class="methodologie-heading scroll-reveal" data-splitting="words" data-zh="从诊断到持续，系统化的资本路径设计。" data-en="From diagnosis to sustainability — systematic capital path design.">从诊断到持续，系统化的资本路径设计。</h2>
+                    <div style="padding:1rem 0;">
+                      <p class="methodologie-desc" data-zh="理解企业现状，对齐资本愿景，设计并执行可验证的价值路径。" data-en="Understanding the current state, aligning capital vision, designing and executing a verifiable value path.">理解企业现状，对齐资本愿景，设计并执行可验证的价值路径。</p>
+                      <a href="#contact" class="btn" title="了解我们的方法">
+                        <div class="btn-label anim-clip-right"><span data-zh="了解我们的方法" data-en="Our Approach">了解我们的方法</span></div>
+                        <div class="button_circle anim-pop">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0d1f1a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                        </div>
+                      </a>
+                    </div>
+
+                    <ul class="accordion-list">
+                      <li class="accordion-item">
+                        <span class="accordion-icon anim-clip-left">
+                          <svg class="anim-fade" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                        </span>
+                        <div class="accordion-content anim-clip-left">
+                          <div class="accordion-header" data-accordion-toggle>
+                            <h3 data-zh="诊断与评估" data-en="Diagnosis & Assessment">诊断与评估</h3>
+                            <span class="accordion-chevron">
+                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                            </span>
+                          </div>
+                          <div class="accordion-body">
+                            <p data-zh="深度分析企业资本结构现状，识别核心问题与潜在机会，建立清晰的诊断基线。" data-en="In-depth analysis of the company's capital structure, identifying core issues and potential opportunities to establish a clear diagnostic baseline.">深度分析企业资本结构现状，识别核心问题与潜在机会，建立清晰的诊断基线。</p>
+                          </div>
+                        </div>
+                      </li>
+                      <li class="accordion-item">
+                        <span class="accordion-icon anim-clip-left">
+                          <svg class="anim-fade" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+                        </span>
+                        <div class="accordion-content anim-clip-left">
+                          <div class="accordion-header" data-accordion-toggle>
+                            <h3 data-zh="策略与设计" data-en="Strategy & Design">策略与设计</h3>
+                            <span class="accordion-chevron">
+                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                            </span>
+                          </div>
+                          <div class="accordion-body">
+                            <p data-zh="制定与企业发展阶段匹配的资本路径方案和市场沟通策略，确保资本叙事的连贯性。" data-en="Developing capital path plans and market communication strategies aligned with the company's development stage, ensuring narrative coherence.">制定与企业发展阶段匹配的资本路径方案和市场沟通策略，确保资本叙事的连贯性。</p>
+                          </div>
+                        </div>
+                      </li>
+                      <li class="accordion-item">
+                        <span class="accordion-icon anim-clip-left">
+                          <svg class="anim-fade" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                        </span>
+                        <div class="accordion-content anim-clip-left">
+                          <div class="accordion-header" data-accordion-toggle>
+                            <h3 data-zh="执行与落地" data-en="Execution & Implementation">执行与落地</h3>
+                            <span class="accordion-chevron">
+                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                            </span>
+                          </div>
+                          <div class="accordion-body">
+                            <p data-zh="从信息披露到交易执行，全流程专业团队协同推进，确保每一步都精准到位。" data-en="From disclosure to trade execution, our professional team coordinates the entire process, ensuring every step is precise.">从信息披露到交易执行，全流程专业团队协同推进，确保每一步都精准到位。</p>
+                          </div>
+                        </div>
+                      </li>
+                      <li class="accordion-item">
+                        <span class="accordion-icon anim-clip-left">
+                          <svg class="anim-fade" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
+                        </span>
+                        <div class="accordion-content anim-clip-left">
+                          <div class="accordion-header" data-accordion-toggle>
+                            <h3 data-zh="持续与迭代" data-en="Continuity & Iteration">持续与迭代</h3>
+                            <span class="accordion-chevron">
+                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                            </span>
+                          </div>
+                          <div class="accordion-body">
+                            <p data-zh="建立长期资本信号管理机制，持续优化市场认知，确保企业价值被持续理解。" data-en="Establishing long-term capital signal management mechanisms, continuously optimizing market perception, ensuring sustained understanding of enterprise value.">建立长期资本信号管理机制，持续优化市场认知，确保企业价值被持续理解。</p>
+                          </div>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div class="methodologie-small-image anim-image-wrap">
+                    <div class="anim-image-overlay"></div>
+                    <div class="anim-image-inner">
+                      <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=600&q=80" alt="Team Collaboration">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="methodologie-right">
+                  <div class="methodologie-image anim-image-wrap">
+                    <div class="anim-image-overlay"></div>
+                    <div class="anim-image-inner">
+                      <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80" alt="Financial District">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Formations Section -->
+          <section class="formations-section">
+            <div class="formations-container">
+              <div class="formations-flex">
+                <div class="formations-left">
+                  <div class="formations-left-inner">
+                    <h2 class="formations-heading scroll-reveal" data-splitting="words" data-zh="选择 ONE SHARE，构建持续的资本存在方式。" data-en="Choose ONE SHARE — build a lasting capital presence.">选择 ONE SHARE，构建持续的资本存在方式。</h2>
+                    <div style="padding:1rem 0;">
+                      <p class="formations-desc" data-zh="我们不只是服务提供者，更是企业资本路径的长期伙伴。" data-en="We are not just service providers — we are long-term partners on your capital journey.">我们不只是服务提供者，更是企业资本路径的长期伙伴。</p>
+                      <a href="#contact" class="btn" title="预约沟通">
+                        <div class="btn-label anim-clip-right"><span data-zh="预约沟通" data-en="Schedule a Call">预约沟通</span></div>
+                        <div class="button_circle anim-pop">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0d1f1a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                        </div>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                <div class="formations-right">
+                  <div class="formations-right-inner">
+                    <a href="javascript:void(0)" class="formation-pill anim-clip-left">
+                      <div class="formation-pill-inner pill-wide">
+                        <div class="formation-pill-flex">
+                          <p class="formation-pill-text" data-zh="立足新加坡，辐射亚太资本市场" data-en="Based in Singapore, serving Asia-Pacific capital markets">立足新加坡，辐射亚太资本市场</p>
+                          <div class="formation-pill-icon">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0d1f1a" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                          </div>
+                        </div>
+                      </div>
+                    </a>
+                    <a href="javascript:void(0)" class="formation-pill anim-clip-left">
+                      <div class="formation-pill-inner pill-narrow">
+                        <div class="formation-pill-flex">
+                          <p class="formation-pill-text" data-zh="跨境上市全流程服务经验" data-en="Full-cycle cross-border listing experience">跨境上市全流程服务经验</p>
+                          <div class="formation-pill-icon">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0d1f1a" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                          </div>
+                        </div>
+                      </div>
+                    </a>
+                    <a href="javascript:void(0)" class="formation-pill anim-clip-left">
+                      <div class="formation-pill-inner pill-wide">
+                        <div class="formation-pill-flex">
+                          <p class="formation-pill-text" data-zh="深度资本市场行业洞察" data-en="Deep capital market industry insights">深度资本市场行业洞察</p>
+                          <div class="formation-pill-icon">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0d1f1a" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                          </div>
+                        </div>
+                      </div>
+                    </a>
+                    <a href="javascript:void(0)" class="formation-pill anim-clip-left">
+                      <div class="formation-pill-inner pill-narrow">
+                        <div class="formation-pill-flex">
+                          <p class="formation-pill-text" data-zh="结构化的投资者关系管理体系" data-en="Structured investor relations management system">结构化的投资者关系管理体系</p>
+                          <div class="formation-pill-icon">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0d1f1a" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                          </div>
+                        </div>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Contact Section -->
+          <section class="methodologie-section" id="contact" style="padding:8rem 0 5rem;">
+            <div class="methodologie-container">
+              <div class="methodologie-flex">
+                <!-- Left: Heading + Info -->
+                <div class="methodologie-left">
+                  <div class="methodologie-left-inner">
+                    <h2 class="methodologie-heading scroll-reveal" data-splitting="words" data-zh="让我们开始对话。" data-en="Let's start a conversation.">让我们开始对话。</h2>
+                    <div style="padding:1.5rem 0;">
+                      <p class="methodologie-desc" data-zh="无论您处于资本路径的哪个阶段，我们都期待与您交流。填写表单，我们的团队将在 1-2 个工作日内与您联系。" data-en="Wherever you are on your capital journey, we look forward to connecting. Fill out the form and our team will reach out within 1-2 business days.">无论您处于资本路径的哪个阶段，我们都期待与您交流。填写表单，我们的团队将在 1-2 个工作日内与您联系。</p>
+                    </div>
+                    <!-- Contact info cards -->
+                    <ul style="list-style:none;padding:2rem 0 0;">
+                      <li style="margin-bottom:0.5rem;display:flex;gap:0.25rem;align-items:stretch;">
+                        <span style="width:50px;display:flex;align-items:center;justify-content:center;background:rgba(26,138,110,0.15);border-radius:0.375rem;padding:0.75rem;flex-shrink:0;">
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                        </span>
+                        <span style="display:inline-flex;align-items:center;background:rgba(26,138,110,0.08);flex-grow:1;border-radius:0.375rem;padding:0.5rem 1rem;font-size:0.875rem;color:#fff;">contact@oneshare.sg</span>
+                      </li>
+                      <li style="margin-bottom:0.5rem;display:flex;gap:0.25rem;align-items:stretch;">
+                        <span style="width:50px;display:flex;align-items:center;justify-content:center;background:rgba(26,138,110,0.15);border-radius:0.375rem;padding:0.75rem;flex-shrink:0;">
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                        </span>
+                        <span style="display:inline-flex;align-items:center;background:rgba(26,138,110,0.08);flex-grow:1;border-radius:0.375rem;padding:0.5rem 1rem;font-size:0.875rem;color:#fff;line-height:1.4;">Marina One East Tower #5<br>7 Straits View, Singapore 018936</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                <!-- Right: Form Card -->
+                <div class="methodologie-right" style="display:flex;align-items:center;">
+                  <div style="width:100%;background:rgba(255,255,255,0.05);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.1);border-radius:33px;padding:2.5rem;">
+                    <form onsubmit="event.preventDefault();this.querySelector('.contact-fields').style.display='none';this.querySelector('.contact-success').style.display='flex';">
+                      <div class="contact-fields">
+                        <div style="display:flex;gap:1rem;margin-bottom:1.25rem;flex-wrap:wrap;">
+                          <div style="flex:1;min-width:180px;">
+                            <label style="display:block;font-size:13px;margin-bottom:8px;font-weight:500;color:rgba(255,255,255,0.6);letter-spacing:0.5px;text-transform:uppercase;" data-zh="姓名 *" data-en="NAME *">姓名 *</label>
+                            <input type="text" required style="width:100%;padding:14px 18px;border:1px solid rgba(255,255,255,0.12);border-radius:12px;font-size:15px;font-family:'poppins',sans-serif;outline:none;background:rgba(255,255,255,0.06);color:#fff;transition:all 0.3s;" onfocus="this.style.borderColor='#1a8a6e';this.style.background='rgba(26,138,110,0.08)'" onblur="this.style.borderColor='rgba(255,255,255,0.12)';this.style.background='rgba(255,255,255,0.06)'">
+                          </div>
+                          <div style="flex:1;min-width:180px;">
+                            <label style="display:block;font-size:13px;margin-bottom:8px;font-weight:500;color:rgba(255,255,255,0.6);letter-spacing:0.5px;text-transform:uppercase;" data-zh="公司" data-en="COMPANY">公司</label>
+                            <input type="text" style="width:100%;padding:14px 18px;border:1px solid rgba(255,255,255,0.12);border-radius:12px;font-size:15px;font-family:'poppins',sans-serif;outline:none;background:rgba(255,255,255,0.06);color:#fff;transition:all 0.3s;" onfocus="this.style.borderColor='#1a8a6e';this.style.background='rgba(26,138,110,0.08)'" onblur="this.style.borderColor='rgba(255,255,255,0.12)';this.style.background='rgba(255,255,255,0.06)'">
+                          </div>
+                        </div>
+                        <div style="display:flex;gap:1rem;margin-bottom:1.25rem;flex-wrap:wrap;">
+                          <div style="flex:1;min-width:180px;">
+                            <label style="display:block;font-size:13px;margin-bottom:8px;font-weight:500;color:rgba(255,255,255,0.6);letter-spacing:0.5px;text-transform:uppercase;" data-zh="邮箱 *" data-en="EMAIL *">邮箱 *</label>
+                            <input type="email" required style="width:100%;padding:14px 18px;border:1px solid rgba(255,255,255,0.12);border-radius:12px;font-size:15px;font-family:'poppins',sans-serif;outline:none;background:rgba(255,255,255,0.06);color:#fff;transition:all 0.3s;" onfocus="this.style.borderColor='#1a8a6e';this.style.background='rgba(26,138,110,0.08)'" onblur="this.style.borderColor='rgba(255,255,255,0.12)';this.style.background='rgba(255,255,255,0.06)'">
+                          </div>
+                          <div style="flex:1;min-width:180px;">
+                            <label style="display:block;font-size:13px;margin-bottom:8px;font-weight:500;color:rgba(255,255,255,0.6);letter-spacing:0.5px;text-transform:uppercase;" data-zh="电话" data-en="PHONE">电话</label>
+                            <input type="tel" style="width:100%;padding:14px 18px;border:1px solid rgba(255,255,255,0.12);border-radius:12px;font-size:15px;font-family:'poppins',sans-serif;outline:none;background:rgba(255,255,255,0.06);color:#fff;transition:all 0.3s;" onfocus="this.style.borderColor='#1a8a6e';this.style.background='rgba(26,138,110,0.08)'" onblur="this.style.borderColor='rgba(255,255,255,0.12)';this.style.background='rgba(255,255,255,0.06)'">
+                          </div>
+                        </div>
+                        <div style="margin-bottom:1.25rem;">
+                          <label style="display:block;font-size:13px;margin-bottom:8px;font-weight:500;color:rgba(255,255,255,0.6);letter-spacing:0.5px;text-transform:uppercase;" data-zh="感兴趣的服务" data-en="SERVICE OF INTEREST">感兴趣的服务</label>
+                          <select style="width:100%;padding:14px 18px;border:1px solid rgba(255,255,255,0.12);border-radius:12px;font-size:15px;font-family:'poppins',sans-serif;outline:none;background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.8);transition:all 0.3s;-webkit-appearance:none;appearance:none;background-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%2212%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22rgba(255,255,255,0.4)%22 stroke-width=%222%22><polyline points=%226 9 12 15 18 9%22/></svg>');background-repeat:no-repeat;background-position:right 18px center;" onfocus="this.style.borderColor='#1a8a6e'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'">
+                            <option value="" style="background:#1a1a1a;" data-zh="请选择" data-en="Please select">请选择</option>
+                            <option value="ir" style="background:#1a1a1a;" data-zh="投资者关系与市场沟通" data-en="Investor Relations & Communication">投资者关系与市场沟通</option>
+                            <option value="equity" style="background:#1a1a1a;" data-zh="股权激励与交易执行" data-en="Equity Incentives & Trade Execution">股权激励与交易执行</option>
+                            <option value="listing" style="background:#1a1a1a;" data-zh="跨境上市与资本整合" data-en="Cross-border Listing & Integration">跨境上市与资本整合</option>
+                            <option value="other" style="background:#1a1a1a;" data-zh="其他" data-en="Other">其他</option>
+                          </select>
+                        </div>
+                        <div style="margin-bottom:1.75rem;">
+                          <label style="display:block;font-size:13px;margin-bottom:8px;font-weight:500;color:rgba(255,255,255,0.6);letter-spacing:0.5px;text-transform:uppercase;" data-zh="留言" data-en="MESSAGE">留言</label>
+                          <textarea rows="4" style="width:100%;padding:14px 18px;border:1px solid rgba(255,255,255,0.12);border-radius:12px;font-size:15px;font-family:'poppins',sans-serif;outline:none;resize:vertical;background:rgba(255,255,255,0.06);color:#fff;transition:all 0.3s;" onfocus="this.style.borderColor='#1a8a6e';this.style.background='rgba(26,138,110,0.08)'" onblur="this.style.borderColor='rgba(255,255,255,0.12)';this.style.background='rgba(255,255,255,0.06)'"></textarea>
+                        </div>
+                        <button type="submit" style="width:100%;padding:16px;background:#1a8a6e;color:#fff;border:none;border-radius:9999px;font-size:1rem;font-weight:600;cursor:pointer;font-family:'poppins',sans-serif;transition:all 0.3s;letter-spacing:0.5px;" onmouseover="this.style.background='#fff';this.style.color='#0d1f1a'" onmouseout="this.style.background='#1a8a6e';this.style.color='#fff'" data-zh="提交" data-en="Submit">提交</button>
+                      </div>
+                      <div class="contact-success" style="display:none;flex-direction:column;align-items:center;justify-content:center;padding:4rem 2rem;text-align:center;">
+                        <div style="width:80px;height:80px;border-radius:9999px;background:rgba(26,138,110,0.15);display:flex;align-items:center;justify-content:center;margin-bottom:1.5rem;">
+                          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                        </div>
+                        <h3 style="color:#fff;font-size:1.5rem;font-family:'Montserrat',sans-serif;font-weight:700;margin:0;" data-zh="感谢您的留言" data-en="Thank you for your message">感谢您的留言</h3>
+                        <p style="color:rgba(255,255,255,0.5);margin-top:0.75rem;font-size:0.95rem;line-height:1.6;" data-zh="我们的团队将在 1-2 个工作日内与您联系。" data-en="Our team will contact you within 1-2 business days.">我们的团队将在 1-2 个工作日内与您联系。</p>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Site Footer -->
+          <footer class="site-footer">
+            <div class="footer-nav">
+              <div class="footer-logo">
+                <a href="#hero">
+                  <img src="oneshare.png" alt="ONE SHARE" style="filter:brightness(10);width:200px;min-width:200px;" />
+                </a>
+              </div>
+              <div class="footer-links-wrap">
+                <ul class="footer-links">
+                  <li><a href="#services" data-zh="投资者关系" data-en="Investor Relations">投资者关系</a></li>
+                  <li><a href="#services" data-zh="股权激励" data-en="Equity Incentives">股权激励</a></li>
+                  <li><a href="#services" data-zh="跨境上市" data-en="Cross-border Listing">跨境上市</a></li>
+                  <li><a href="#insights" data-zh="新闻与洞察" data-en="News & Insights">新闻与洞察</a></li>
+                  <li><a href="#contact" data-zh="联系我们" data-en="Contact Us">联系我们</a></li>
+                </ul>
+              </div>
+              <div class="footer-social">
+                <ul>
+                  <li><a target="_blank" href="https://www.linkedin.com/company/oneshare-singapore/" title="LinkedIn"><svg width="25" height="25" viewBox="0 0 24 24" fill="#fff"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a></li>
+                  <li><a target="_blank" href="https://twitter.com/oneshare_sg" title="X / Twitter"><svg width="25" height="25" viewBox="0 0 24 24" fill="#fff"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a></li>
+                  <li><a target="_blank" href="https://www.facebook.com/oneshare.sg" title="Facebook"><svg width="25" height="25" viewBox="0 0 24 24" fill="#fff"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a></li>
+                  <li><a target="_blank" href="https://www.instagram.com/oneshare.sg/" title="Instagram"><svg width="25" height="25" viewBox="0 0 24 24" fill="#fff"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C16.67.014 16.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></a></li>
+                  <li><a target="_blank" href="https://wa.me/6500000000" title="WhatsApp"><svg width="25" height="25" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></a></li>
+                </ul>
+              </div>
+            </div>
+            <div class="footer-bottom">
+              <div class="footer-bottom-left">
+                <span style="color:#898c8a;font-size:0.75rem;">Marina One East Tower #5, 7 Straits View, Singapore 018936</span>
+              </div>
+              <div class="footer-bottom-right">
+                <span>© 2026 ONE SHARE (SINGAPORE) PTE. LTD. All rights reserved.</span>
+              </div>
+            </div>
+          </footer>
+
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ============ Three.js (from their bundle includes THREE) ============ -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <script>
+    // ---- Preloader (Bloomberg Terminal) ----
+    (function() {
+      var preloader = document.getElementById('preloader');
+      if (!preloader) return;
+
+      // 1. Generate background ticker rows
+      var terminal = document.getElementById('preTerminal');
+      var tickers = ['SGX:OS1','HKEX:0388','NYSE:GS','SGX:Z74','NASDAQ:AAPL','LSE:HSBA','TSE:8306','SGX:D05','NYSE:MS','HKEX:0005','SGX:U11','NYSE:JPM','NASDAQ:MSFT','SGX:BN4','HKEX:1299','NYSE:BAC','SGX:S68','NASDAQ:GOOGL','HKEX:0700','SGX:C6L'];
+      for (var r = 0; r < 20; r++) {
+        var row = document.createElement('div');
+        row.className = 'pre-ticker-row';
+        var content = '';
+        for (var t = 0; t < 40; t++) {
+          var tk = tickers[Math.floor(Math.random() * tickers.length)];
+          var price = (Math.random() * 500 + 1).toFixed(2);
+          var change = (Math.random() * 10 - 5).toFixed(2);
+          var sign = parseFloat(change) >= 0 ? '+' : '';
+          content += tk + ' ' + price + ' ' + sign + change + '%    ';
+        }
+        row.textContent = content;
+        row.style.animationDelay = -(Math.random() * 20) + 's';
+        terminal.appendChild(row);
+      }
+
+      // 2. Number scramble effect
+      var numbersEl = document.getElementById('preNumbers');
+      var scrambleChars = '0123456789.%+-$¥€£';
+      var scrambleLen = 24;
+      var scrambleInterval = setInterval(function() {
+        var s = '';
+        for (var i = 0; i < scrambleLen; i++) {
+          s += scrambleChars[Math.floor(Math.random() * scrambleChars.length)];
+          if (i % 6 === 5) s += '  ';
+        }
+        numbersEl.textContent = s;
+      }, 50);
+
+      // 3. Timeline
+      // 0.8s: flash + reveal brand
+      setTimeout(function() {
+        document.getElementById('preFlash').classList.add('fire');
+        document.getElementById('preBrand').classList.add('revealed');
+      }, 800);
+
+      // 1.2s: show tagline
+      setTimeout(function() {
+        document.getElementById('preTagline').classList.add('show');
+      }, 1200);
+
+      // 1.4s: show data items + counter
+      setTimeout(function() {
+        var items = document.querySelectorAll('.pre-data-item');
+        items.forEach(function(item, i) {
+          setTimeout(function() {
+            item.classList.add('show');
+            var valEl = item.querySelector('.pre-data-val');
+            var target = parseInt(valEl.dataset.target);
+            var dur = 800;
+            var startTime = null;
+            function count(ts) {
+              if (!startTime) startTime = ts;
+              var p = Math.min((ts - startTime) / dur, 1);
+              var eased = 1 - Math.pow(1 - p, 3);
+              valEl.textContent = Math.round(eased * target) + '+';
+              if (p < 1) requestAnimationFrame(count);
+            }
+            requestAnimationFrame(count);
+          }, i * 120);
+        });
+      }, 1400);
+
+      // 2.2s: stop scramble, show final numbers
+      setTimeout(function() {
+        clearInterval(scrambleInterval);
+        numbersEl.textContent = 'SGX:ONESHARE  ▲ CONNECTED';
+        numbersEl.style.color = '#1a8a6e';
+      }, 2200);
+
+      // 2.8s: exit
+      setTimeout(function() {
+        preloader.classList.add('phase-out');
+        document.body.classList.add('preloader-done');
+        setTimeout(function() { preloader.remove(); }, 800);
+      }, 2800);
+    })();
+
+    // ---- Stats Section Animations ----
+    (function() {
+      var statsHeading = document.querySelector('.stats-heading');
+      if (!statsHeading) return;
+
+      // Counter animation for pill numbers
+      function animateCounter(el, target, suffix) {
+        var start = 0;
+        var duration = 1500;
+        var startTime = null;
+        var isFloat = target % 1 !== 0;
+        function step(ts) {
+          if (!startTime) startTime = ts;
+          var progress = Math.min((ts - startTime) / duration, 1);
+          var eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+          var current = Math.round(eased * target);
+          el.textContent = current + suffix;
+          if (progress < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+      }
+
+      var triggered = false;
+      function triggerStats() {
+        if (triggered) return;
+        triggered = true;
+
+        // 1. Stagger text spans
+        var textSpans = statsHeading.querySelectorAll('span:not(.green-pill):not(.pill-content):not(.pill-number):not(.pill-text)');
+        textSpans.forEach(function(span, i) {
+          span.style.transitionDelay = (i * 0.12) + 's';
+        });
+        statsHeading.classList.add('stats-animated');
+
+        // 2. Pop pills in with stagger
+        var pills = statsHeading.querySelectorAll('.green-pill');
+        pills.forEach(function(pill, i) {
+          setTimeout(function() {
+            pill.classList.add('pill-visible');
+          }, 400 + i * 250);
+        });
+
+        // 3. Counter animation
+        var pillNumbers = statsHeading.querySelectorAll('.pill-number');
+        pillNumbers.forEach(function(pn, i) {
+          var text = pn.textContent.trim();
+          var match = text.match(/^(\d+)(.*)$/);
+          if (match) {
+            var num = parseInt(match[1]);
+            var suffix = match[2]; // e.g. "+"
+            pn.textContent = '0' + suffix;
+            setTimeout(function() {
+              animateCounter(pn, num, suffix);
+            }, 600 + i * 250);
+          }
+        });
+      }
+
+      // Observe
+      setTimeout(function() {
+        var observer = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+              triggerStats();
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { rootMargin: '0px 0px -100px 0px', threshold: 0.1 });
+        observer.observe(statsHeading);
+      }, 3800);
+    })();
+
+    // ---- Scroll Reveal (delayed until preloader done) ----
+    (function() {
+      function initScrollReveal() {
+        var els = document.querySelectorAll('.scroll-reveal');
+        if (!els.length) return;
+        var observer = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { rootMargin: '0px 0px -100px 0px', threshold: 0.05 });
+        els.forEach(function(el) { observer.observe(el); });
+      }
+      // Start after preloader finishes (2.8s + 0.8s exit)
+      setTimeout(initScrollReveal, 3800);
+    })();
+
+    // ---- Close Announcement Banner ----
+    document.getElementById('closeBanner').addEventListener('click', function() {
+      var banner = document.getElementById('headBanner');
+      banner.style.transition = 'height 0.4s ease, opacity 0.4s ease';
+      banner.style.height = banner.offsetHeight + 'px';
+      requestAnimationFrame(function() {
+        banner.style.height = '0';
+        banner.style.opacity = '0';
+        banner.style.overflow = 'hidden';
+      });
+    });
+
+    // ---- Hide nav on scroll down, show on scroll up ----
+    (function() {
+      var nav = document.querySelector('.header-desktop');
+      if (!nav) return;
+      var lastY = 0;
+      window.addEventListener('scroll', function() {
+        var y = window.scrollY;
+        if (y > lastY && y > 100) {
+          nav.classList.add('nav-hidden');
+        } else {
+          nav.classList.remove('nav-hidden');
+        }
+        lastY = y;
+      }, { passive: true });
+    })();
+
+    // ---- WebGL Aurora + Particles (replicated from their source) ----
+    (function() {
+      var canvas = document.getElementById('webgl');
+      if (!canvas) return;
+
+      // 1. SETUP
+      var renderer = new THREE.WebGLRenderer({
+        canvas: canvas,
+        antialias: true,
+        alpha: true
+      });
+      renderer.setPixelRatio(2);
+      renderer.setSize(innerWidth, innerHeight);
+
+      var scene = new THREE.Scene();
+      var camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+
+      // 2. UNIFORMS
+      var uniforms = {
+        uResolution: { value: new THREE.Vector2(innerWidth, innerHeight) },
+        uTime:       { value: 0.0 },
+        uAspect:     { value: innerWidth / innerHeight },
+        uIsMobile:   { value: innerWidth < 1024 ? 1.0 : 0.0 },
+        uIsLarge:    { value: innerWidth > 1900 ? 1.0 : 0.0 }
+      };
+
+      // 3. SHARED GLSL
+      var sharedGLSL = `
+        vec3 permute(vec3 x){ return mod(((x*34.)+1.)*x,289.); }
+        float snoise(vec2 v){
+          const vec4 C = vec4(.2113,.3660,.5773,.02439);
+          vec2 i = floor(v + dot(v,C.yy));
+          vec2 x0= v - i + dot(i,C.xx);
+          vec2 i1= step(x0.yx,x0.xy);
+          vec4 x12 = x0.xyxy + C.xxzz; x12.xy -= i1;
+          i = mod(i,289.);
+          vec3 p = permute( permute(i.y+vec3(0.,i1.y,1.)) + i.x+vec3(0.,i1.x,1.) );
+          vec3 m = max(.5 - vec3(dot(x0,x0),dot(x12.xy,x12.xy),dot(x12.zw,x12.zw)),0.);
+          m = m*m*m;
+          vec3 x = 2.*fract(p*C.www)-1., h=abs(x)-.5, ox=floor(x+.5); x-=ox;
+          m *= 1.7928 - .8537*(x*x + h*h);
+          return dot(m, vec3(
+            dot(vec2(x.x,h.x),x0),
+            dot(vec2(x.y,h.y),x12.xy),
+            dot(vec2(x.z,h.z),x12.zw)
+          ));
+        }
+
+        float flicker(float s,float t){
+          return fract(sin(s*12.9898 + t*5.0)*43758.5453);
+        }
+
+        float auroraMask(vec2 uv, float time, float aspect, float isMobile){
+          uv -= vec2(0.30,0.20);
+          float shrink = aspect<1.0?1.0:clamp(aspect,1.0,1.3);
+          float funnel = mix(0.7,1.8,isMobile);
+          uv.y *= shrink * funnel;
+
+          float amp   = mix(0.8,0.3, clamp(uv.y/0.7,0.0,1.0));
+          float curve = 0.5 + amp*sin(uv.y*3.0 + time*0.15);
+          float d     = abs(uv.x - curve);
+          float m     = smoothstep(0.6,0.0,d);
+          m *= (snoise(uv*4.0 + time*0.15)*0.2 + 0.8);
+          return clamp(m,0.0,1.0);
+        }
+      `;
+
+      // 4. SHAPE SHADER (aurora glow)
+      var fragShape = `
+        precision highp float;
+        uniform vec2  uResolution;
+        uniform float uTime, uAspect, uIsMobile;
+        ${sharedGLSL}
+
+        void main(){
+          vec2 uv = gl_FragCoord.xy / uResolution;
+          float m = auroraMask(uv, uTime, uAspect, uIsMobile);
+
+          float vFade = smoothstep(0.0, 0.6, uv.y);
+          m *= vFade;
+
+          gl_FragColor = vec4(vec3(0.10,0.54,0.43), m * 0.6);
+        }
+      `;
+
+      scene.add(new THREE.Mesh(
+        new THREE.PlaneGeometry(2, 2),
+        new THREE.ShaderMaterial({
+          uniforms: uniforms,
+          fragmentShader: fragShape,
+          transparent: true,
+          depthWrite: false
+        })
+      ));
+
+      // 5. PARTICLES
+      var COUNT = 18000;
+      var geo = new THREE.BufferGeometry();
+      var pos = new Float32Array(COUNT * 3);
+      var seed = new Float32Array(COUNT);
+
+      for (var i = 0; i < COUNT; i++) {
+        pos[3 * i]     = Math.random() * 2 - 1;
+        pos[3 * i + 1] = Math.random() * 2 - 1;
+        pos[3 * i + 2] = 0;
+        seed[i] = Math.random();
+      }
+
+      geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+      geo.setAttribute('aSeed',    new THREE.BufferAttribute(seed, 1));
+
+      var vertPart = `
+        precision highp float;
+        attribute float aSeed;
+        uniform float uTime, uIsLarge;
+        ${sharedGLSL}
+
+        void main(){
+          vec2 p0 = position.xy;
+          float t  = uTime*0.1 + aSeed*5.0;
+          vec2 vel= (vec2(
+            snoise(p0*2.0 + t),
+            snoise(p0*2.0 + t + 50.0)
+          )*2.0 -1.0)*0.02;
+          vec2 p = p0 + vel;
+          float ps= 3.0 + snoise(vec2(aSeed*20.0,t))*1.0;
+          ps *= mix(1.0,0.5,uIsLarge);
+          gl_PointSize = ps;
+          gl_Position  = vec4(p,0.0,1.0);
+        }
+      `;
+
+      var fragPart = `
+        precision highp float;
+        uniform vec2  uResolution;
+        uniform float uTime, uAspect, uIsMobile, uIsLarge;
+        ${sharedGLSL}
+
+        void main(){
+          vec2 uv = gl_FragCoord.xy / uResolution;
+          float m  = auroraMask(uv,uTime,uAspect,uIsMobile);
+          float edge= smoothstep(0.0,0.40,m);
+
+          float vFade = smoothstep(0.0, 0.6, uv.y);
+          edge *= vFade;
+          if(edge < 0.003) discard;
+
+          vec2 d = gl_PointCoord - 0.5;
+          if(length(d)>0.5) discard;
+
+          float f = flicker(gl_FragCoord.x+gl_FragCoord.y, uTime*0.3);
+          float alpha = edge * mix(0.2,1.0,f);
+
+          alpha *= mix(1.0,0.6,uIsMobile);
+
+          vec3 green = vec3(0.10,0.65,0.50);
+          vec3 col   = mod(gl_FragCoord.x+gl_FragCoord.y,10.0)<9.0
+                        ? green
+                        : vec3(1.0);
+          gl_FragColor = vec4(col, alpha);
+        }
+      `;
+
+      var points = new THREE.Points(geo, new THREE.ShaderMaterial({
+        uniforms: uniforms,
+        vertexShader: vertPart,
+        fragmentShader: fragPart,
+        transparent: true,
+        depthWrite: false,
+        depthTest: false
+      }));
+      points.renderOrder = 1;
+      scene.add(points);
+
+      // 6. LOOP & RESIZE
+      var prevW = window.innerWidth, prevH = window.innerHeight;
+      var resizeDebounce;
+      window.addEventListener('resize', function() {
+        clearTimeout(resizeDebounce);
+        resizeDebounce = setTimeout(function() {
+          var w = window.innerWidth;
+          var h = window.innerHeight;
+          if (w === prevW && Math.abs(h - prevH) < 100) return;
+          prevW = w; prevH = h;
+          renderer.setSize(w, h);
+          uniforms.uResolution.value.set(w, h);
+          uniforms.uAspect.value = w / h;
+          uniforms.uIsMobile.value = w < 1024 ? 1.0 : 0.0;
+          uniforms.uIsLarge.value  = w > 1900 ? 1.0 : 0.0;
+        }, 200);
+      });
+
+      var clock = new THREE.Clock();
+      (function tick() {
+        uniforms.uTime.value = clock.getElapsedTime();
+        renderer.render(scene, camera);
+        requestAnimationFrame(tick);
+      })();
+    })();
+
+    // ---- Hero Image Scroll Expansion ----
+    // The small hero image expands to fill the viewport as user scrolls
+    (function() {
+      if (window.innerWidth <= 1280) return;
+
+      var heroImage = document.getElementById('heroImage');
+      var heroInner = heroImage ? heroImage.querySelector('.hero-image-inner') : null;
+      var heroSection = document.getElementById('hero');
+      var spacer = document.getElementById('videoScrollSpacer');
+      if (!heroImage || !heroInner || !spacer) return;
+
+      var clamp = function(v, a, b) { return v < a ? a : v > b ? b : v; };
+      var lerp = function(a, b, t) { return a + (b - a) * t; };
+
+      // Fade hero text elements
+      var fadeEls = document.querySelectorAll('.fade-el-scroll');
+
+      // Get initial position/size of the hero image
+      var getInitialRect = function() {
+        return heroImage.getBoundingClientRect();
+      };
+
+      // Target: full viewport width, centered, with 16:9 aspect ratio
+      var scrollStart, scrollRange;
+      var initTop, initLeft, initWidth, initHeight;
+
+      var computeLayout = function() {
+        // Reset transforms to measure natural position
+        heroImage.style.position = 'absolute';
+        heroImage.style.transform = '';
+        heroImage.style.width = '';
+        heroImage.style.left = '';
+        heroImage.style.bottom = '';
+        heroImage.style.top = '';
+        heroImage.style.maxWidth = '';
+        heroImage.style.minWidth = '';
+        heroInner.style.borderRadius = '';
+        heroInner.style.aspectRatio = '';
+
+        var rect = heroImage.getBoundingClientRect();
+        initTop = rect.top + window.scrollY;
+        initLeft = rect.left;
+        initWidth = rect.width;
+        initHeight = rect.height;
+
+        scrollStart = 0;
+        scrollRange = window.innerHeight * 0.8;
+      };
+      computeLayout();
+
+      var onScroll = function() {
+        var progress = clamp(window.scrollY / scrollRange, 0, 1);
+
+        if (progress <= 0) {
+          // Reset to initial state
+          heroImage.style.position = 'absolute';
+          heroImage.style.transform = '';
+          heroImage.style.width = '';
+          heroImage.style.left = '';
+          heroImage.style.bottom = '-2%';
+          heroImage.style.top = '';
+          heroImage.style.maxWidth = '350px';
+          heroImage.style.minWidth = '200px';
+          heroInner.style.borderRadius = '12px';
+          heroInner.style.aspectRatio = '16 / 9';
+
+          fadeEls.forEach(function(el) {
+            el.style.opacity = '1';
+            el.style.filter = '';
+          });
+          return;
+        }
+
+        // Calculate target: full container width centered
+        var containerWidth = Math.min(1400, window.innerWidth);
+        var containerLeft = (window.innerWidth - containerWidth) / 2;
+        var targetWidth = containerWidth;
+        var targetHeight = targetWidth * 9 / 16;
+        var targetTop = (window.innerHeight - targetHeight) / 2;
+        var targetLeft = containerLeft;
+
+        heroImage.style.position = 'fixed';
+        heroImage.style.zIndex = '1';
+        heroImage.style.maxWidth = 'none';
+        heroImage.style.minWidth = '0';
+        heroImage.style.bottom = '';
+
+        if (progress >= 1) {
+          // Animation complete: image scrolls with page (offset upward by extra scroll)
+          var extraScroll = window.scrollY - scrollRange;
+          heroImage.style.width = targetWidth + 'px';
+          heroImage.style.left = targetLeft + 'px';
+          heroImage.style.top = (targetTop - extraScroll) + 'px';
+          heroInner.style.borderRadius = '40px';
+          heroInner.style.aspectRatio = '16 / 9';
+          heroImage.style.visibility = 'visible';
+        } else {
+          // During animation: interpolate
+          var currentWidth = lerp(initWidth, targetWidth, progress);
+          var currentTop = lerp(initTop - window.scrollY * (1 - progress), targetTop, progress);
+          var currentLeft = lerp(initLeft, targetLeft, progress);
+          var borderRadius = lerp(12, 40, progress);
+
+          heroImage.style.width = currentWidth + 'px';
+          heroImage.style.left = currentLeft + 'px';
+          heroImage.style.top = currentTop + 'px';
+          heroInner.style.borderRadius = borderRadius + 'px';
+          heroInner.style.aspectRatio = '16 / 9';
+          heroImage.style.visibility = 'visible';
+        }
+
+        // Fade hero text
+        fadeEls.forEach(function(el) {
+          var fadeProgress = clamp((progress - 0.05) / 0.4, 0, 1);
+          el.style.opacity = 1 - fadeProgress;
+          el.style.filter = 'blur(' + (fadeProgress * 8) + 'px)';
+        });
+      };
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', function() {
+        computeLayout();
+        onScroll();
+      });
+      onScroll();
+    })();
+
+    // ---- Word-splitting waterfall reveal ----
+    (function() {
+      // Split words into spans
+      var els = document.querySelectorAll('[data-splitting]');
+      els.forEach(function(el) {
+        var text = el.textContent.trim();
+        var words = text.split(/\s+/);
+        var isWaterfall = el.hasAttribute('data-splitting-waterfall');
+        el.innerHTML = words.map(function(word) {
+          return '<span class="word"><span class="word-content">' + word + '</span></span>';
+        }).join(' ');
+
+        // Observe for viewport entry
+        var observer = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+              var wordContents = el.querySelectorAll('.word-content');
+              wordContents.forEach(function(wc, i) {
+                var delay = isWaterfall ? i * 0.1 : 0;
+                wc.animate([
+                  { transform: 'translateY(100%)' },
+                  { transform: 'translateY(0)' }
+                ], {
+                  duration: 1000,
+                  easing: 'cubic-bezier(0.3, 0.86, 0.36, 0.95)',
+                  delay: delay * 1000,
+                  fill: 'forwards'
+                });
+              });
+              observer.unobserve(el);
+            }
+          });
+        }, { rootMargin: '0px 0px -200px 0px' });
+        observer.observe(el);
+      });
+    })();
+
+    // ---- Fade-in animation (anim-fade) ----
+    (function() {
+      var els = document.querySelectorAll('.anim-fade');
+      if (!els.length) return;
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            entry.target.animate([
+              { opacity: 0 },
+              { opacity: 1 }
+            ], {
+              duration: 700,
+              easing: 'cubic-bezier(0.3, 0.86, 0.36, 0.95)',
+              fill: 'forwards'
+            });
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { rootMargin: '0px 0px -50px 0px' });
+      els.forEach(function(el) { observer.observe(el); });
+    })();
+
+    // ---- Pop-up effect (anim-pop) ----
+    (function() {
+      var els = document.querySelectorAll('.anim-pop');
+      if (!els.length) return;
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            entry.target.style.animation = 'popUpEffect 1.6s cubic-bezier(0.7, 0, 0.3, 1) 0.3s forwards';
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { rootMargin: '0px 0px 150px 0px' });
+      els.forEach(function(el) { observer.observe(el); });
+    })();
+
+    // ---- Clip-path reveal from right (anim-clip-right) ----
+    (function() {
+      var els = document.querySelectorAll('.anim-clip-right');
+      if (!els.length) return;
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            entry.target.style.animation = 'rollFromRight 0.8s cubic-bezier(0.7, 0, 0.3, 1) forwards';
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { rootMargin: '0px 0px 150px 0px' });
+      els.forEach(function(el) { observer.observe(el); });
+    })();
+
+    // ---- Clip-path reveal from left (anim-clip-left) ----
+    (function() {
+      var els = document.querySelectorAll('.anim-clip-left');
+      if (!els.length) return;
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            entry.target.style.animation = 'rollFromLeft 0.8s cubic-bezier(0.7, 0, 0.3, 1) forwards';
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { rootMargin: '0px 0px 150px 0px' });
+      els.forEach(function(el) { observer.observe(el); });
+    })();
+
+    // ---- Image reveal: green wipe + fade + zoom (anim-image-wrap) ----
+    (function() {
+      var wraps = document.querySelectorAll('.anim-image-wrap');
+      if (!wraps.length) return;
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            var overlay = entry.target.querySelector('.anim-image-overlay');
+            var inner = entry.target.querySelector('.anim-image-inner');
+            var img = inner ? inner.querySelector('img') : null;
+            // 1. Green overlay sweeps across
+            if (overlay) {
+              overlay.style.animation = 'rollFromLeftOverlay 1s cubic-bezier(0.7, 0, 0.3, 1) forwards';
+            }
+            // 2. Image fades in after 0.5s
+            if (inner) {
+              inner.style.animation = 'fadeElement 0.25s linear 0.5s forwards';
+            }
+            // 3. Image zooms out + unblurs after 1s
+            if (img) {
+              img.animate([
+                { transform: 'scale(1.4)', filter: 'blur(4px)' },
+                { transform: 'scale(1)', filter: 'blur(0px)' }
+              ], {
+                duration: 1500,
+                easing: 'cubic-bezier(0.3, 0.86, 0.36, 0.95)',
+                delay: 1000,
+                fill: 'forwards'
+              });
+            }
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { rootMargin: '0px 0px 150px 0px' });
+      wraps.forEach(function(el) { observer.observe(el); });
+    })();
+
+    // ---- Expertise Cards Sticky Stacking Animation ----
+    (function() {
+      var SHADES = ['#FAF7F7', '#E3E3E3', '#D9D9D9', '#C9C9C9', '#BCBCBC', '#ADADAD'];
+      var SCALE_STEP = 0.05;
+      var cards = Array.prototype.slice.call(document.querySelectorAll('.expertise-card'));
+      if (!cards.length) return;
+
+      var starts = [], heights = [], levels = [], rgbTarget = [];
+      var h2rgb = function(h) {
+        return [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
+      };
+      var base = h2rgb(SHADES[0]);
+
+      var recompute = function() {
+        starts.length = heights.length = levels.length = rgbTarget.length = 0;
+        cards.forEach(function(c, i) {
+          var top = parseFloat(getComputedStyle(c).top) || 0;
+          var abs = c.getBoundingClientRect().top + window.scrollY;
+          starts.push(abs - top);
+          heights.push(c.offsetHeight);
+          var level = cards.length - 1 - i;
+          levels.push(level);
+          rgbTarget.push(h2rgb(level === 0 ? SHADES[0] : SHADES[Math.min(level, SHADES.length - 1)]));
+          c.style.willChange = 'transform,background-color';
+        });
+      };
+      recompute();
+
+      var clamp = function(v, a, b) { return v < a ? a : v > b ? b : v; };
+      var lerp = function(a, b, t) { return a + (b - a) * t; };
+
+      var lastP = new Float32Array(cards.length);
+      var ticking = false;
+
+      var render = function() {
+        ticking = false;
+        var y = window.scrollY;
+        cards.forEach(function(c, i) {
+          var p = clamp((y - starts[i]) / heights[i], 0, 1);
+          if (p === lastP[i]) return;
+
+          var tr = rgbTarget[i][0], tg = rgbTarget[i][1], tb = rgbTarget[i][2];
+          var r = Math.round(lerp(base[0], tr, p));
+          var g = Math.round(lerp(base[1], tg, p));
+          var b = Math.round(lerp(base[2], tb, p));
+          c.style.backgroundColor = 'rgb(' + r + ',' + g + ',' + b + ')';
+
+          var scaleT = 1 - SCALE_STEP * levels[i];
+          c.style.transform = 'scale(' + lerp(1, scaleT, p) + ')';
+
+          lastP[i] = p;
+        });
+      };
+
+      var onScroll = function() {
+        if (!ticking) {
+          ticking = true;
+          requestAnimationFrame(render);
+        }
+      };
+
+      render();
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', function() { recompute(); render(); }, { passive: true });
+    })();
+
+    // ---- Team Section: IntersectionObserver animations ----
+    (function() {
+      // Pop-up effect for testimonial bubbles and avatar circles
+      var popEls = document.querySelectorAll('.testimonial');
+      var revealEls = document.querySelectorAll('.team-cta-inner');
+
+      if ('IntersectionObserver' in window) {
+        var popObserver = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('pop-visible');
+              popObserver.unobserve(entry.target);
+            }
+          });
+        }, { rootMargin: '0px 0px 150px 0px' });
+
+        popEls.forEach(function(el, i) {
+          el.style.animationDelay = (i * 0.15) + 's';
+          popObserver.observe(el);
+        });
+
+        var revealObserver = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('reveal-visible');
+              revealObserver.unobserve(entry.target);
+            }
+          });
+        }, { rootMargin: '0px 0px 150px 0px' });
+
+        revealEls.forEach(function(el) {
+          revealObserver.observe(el);
+        });
+      } else {
+        // Fallback: show everything
+        popEls.forEach(function(el) { el.style.transform = 'scale(1)'; });
+        revealEls.forEach(function(el) { el.style.clipPath = 'none'; });
+      }
+    })();
+
+    // ---- Perspectives Swipe Slider ----
+    (function() {
+      var slider = document.getElementById('perspectivesSlider');
+      var track = document.getElementById('articlesTrack');
+      if (!slider || !track) return;
+
+      var currentX = 0;
+      var startPointerX = 0;
+      var startScrollX = 0;
+      var isDragging = false;
+      var dragMoved = false;
+      var velX = 0;
+      var lastPointerX = 0;
+      var lastTime = 0;
+      var rafId = null;
+
+      var getMaxScroll = function() {
+        return Math.max(0, track.scrollWidth - slider.offsetWidth);
+      };
+
+      var setPosition = function(x) {
+        currentX = Math.max(-getMaxScroll(), Math.min(0, x));
+        track.style.transform = 'translateX(' + currentX + 'px)';
+      };
+
+      // Pointer down
+      var onStart = function(pageX) {
+        isDragging = true;
+        dragMoved = false;
+        slider.classList.add('swiping');
+        startPointerX = pageX;
+        startScrollX = currentX;
+        velX = 0;
+        lastPointerX = pageX;
+        lastTime = Date.now();
+        cancelAnimationFrame(rafId);
+        clearInterval(autoTimer);
+      };
+
+      // Pointer move
+      var onMove = function(pageX) {
+        if (!isDragging) return;
+        var dx = pageX - startPointerX;
+        if (Math.abs(dx) > 5) dragMoved = true;
+        setPosition(startScrollX + dx);
+        // velocity tracking
+        var now = Date.now();
+        var dt = now - lastTime;
+        if (dt > 0) {
+          velX = (pageX - lastPointerX) / dt;
+          lastPointerX = pageX;
+          lastTime = now;
+        }
+      };
+
+      // Pointer up - momentum
+      var onEnd = function() {
+        if (!isDragging) return;
+        isDragging = false;
+        slider.classList.remove('swiping');
+
+        // Momentum coast
+        var friction = 0.95;
+        var coast = function() {
+          if (Math.abs(velX) < 0.05) {
+            scheduleAuto();
+            return;
+          }
+          velX *= friction;
+          setPosition(currentX + velX * 16);
+          rafId = requestAnimationFrame(coast);
+        };
+        rafId = requestAnimationFrame(coast);
+      };
+
+      // Mouse events
+      slider.addEventListener('mousedown', function(e) { e.preventDefault(); onStart(e.pageX); });
+      window.addEventListener('mousemove', function(e) { if (isDragging) { e.preventDefault(); onMove(e.pageX); } });
+      window.addEventListener('mouseup', function() { onEnd(); });
+
+      // Touch events
+      slider.addEventListener('touchstart', function(e) { onStart(e.touches[0].pageX); }, { passive: true });
+      slider.addEventListener('touchmove', function(e) { onMove(e.touches[0].pageX); }, { passive: false });
+      slider.addEventListener('touchend', function() { onEnd(); }, { passive: true });
+
+      // Prevent click on cards after drag
+      slider.addEventListener('click', function(e) {
+        if (dragMoved) { e.preventDefault(); e.stopPropagation(); dragMoved = false; }
+      }, true);
+
+      // Auto-advance
+      var autoTimer;
+      var scheduleAuto = function() {
+        clearInterval(autoTimer);
+        autoTimer = setInterval(function() {
+          var card = track.querySelector('.article-card');
+          if (!card) return;
+          var step = card.offsetWidth + 16;
+          var target = currentX - step;
+          if (Math.abs(target) > getMaxScroll()) target = 0;
+          slider.classList.remove('swiping');
+          setPosition(target);
+        }, 5000);
+      };
+      scheduleAuto();
+
+      // Hide scrollbar
+      var s = document.createElement('style');
+      s.textContent = '.slider-container::-webkit-scrollbar{display:none}';
+      document.head.appendChild(s);
+    })();
+
+    // ---- Lerp Cursor (Glisser) ----
+    (function() {
+      if (window.innerWidth <= 1280) return;
+
+      var cursor = document.createElement('div');
+      cursor.className = 'lerp-cursor';
+      cursor.textContent = '拖动';
+      document.body.appendChild(cursor);
+
+      var x = 0, y = 0, tx = 0, ty = 0;
+      var ease = 0.1;
+
+      document.addEventListener('mousemove', function(e) {
+        tx = e.clientX;
+        ty = e.clientY;
+      }, { passive: true });
+
+      document.body.addEventListener('mouseover', function(e) {
+        var tgt = e.target.closest('.cursor-target');
+        if (!tgt) return;
+        cursor.textContent = tgt.dataset.cursorText || '拖动';
+        cursor.style.opacity = '1';
+        cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+      });
+
+      document.body.addEventListener('mouseout', function(e) {
+        if (e.target.closest('.cursor-target')) {
+          cursor.style.opacity = '0';
+          cursor.style.transform = 'translate(-50%, -50%) scale(0)';
+        }
+      });
+
+      (function raf() {
+        x += (tx - x) * ease;
+        y += (ty - y) * ease;
+        cursor.style.left = x + 'px';
+        cursor.style.top = y + 'px';
+        requestAnimationFrame(raf);
+      })();
+    })();
+
+    // ---- Accordion toggle ----
+    (function() {
+      var headers = document.querySelectorAll('[data-accordion-toggle]');
+      headers.forEach(function(header) {
+        header.addEventListener('click', function() {
+          var item = header.closest('.accordion-item');
+          var body = item.querySelector('.accordion-body');
+          if (!body) return;
+
+          if (item.classList.contains('open')) {
+            // Close
+            body.style.height = body.scrollHeight + 'px';
+            requestAnimationFrame(function() {
+              body.style.height = '0';
+            });
+            item.classList.remove('open');
+          } else {
+            // Open
+            var h = body.scrollHeight;
+            body.style.height = h + 'px';
+            item.classList.add('open');
+            body.addEventListener('transitionend', function handler() {
+              if (item.classList.contains('open')) {
+                body.style.height = 'auto';
+              }
+              body.removeEventListener('transitionend', handler);
+            });
+          }
+        });
+      });
+    })();
+
+    // ---- ONE SHARE Language Switcher ----
+    (function(){
+      var lang = localStorage.getItem('oneshare-lang') || 'zh';
+
+      function applyLang(l) {
+        document.querySelectorAll('[data-zh][data-en]').forEach(function(el) {
+          if (el.classList && el.classList.contains('os-lang-btn')) return;
+          var v = l === 'en' ? el.dataset.en : el.dataset.zh;
+          if (el.tagName === 'INPUT') {
+            el.placeholder = v;
+          } else {
+            while (el.firstChild) el.removeChild(el.firstChild);
+            el.appendChild(document.createTextNode(v));
+          }
+        });
+      }
+
+      function switchLang(l) {
+        if (l === lang) return;
+        document.body.style.opacity = '0';
+        document.body.style.transition = 'opacity 0.2s';
+        setTimeout(function() {
+          applyLang(l);
+          lang = l;
+          localStorage.setItem('oneshare-lang', l);
+          document.querySelectorAll('.os-lang-btn').forEach(function(b) {
+            var a = b.dataset.lang === l;
+            b.style.background = a ? '#fff' : 'transparent';
+            b.style.color = a ? '#0d1f1a' : 'rgba(255,255,255,0.6)';
+          });
+          document.body.style.opacity = '1';
+        }, 200);
+      }
+
+      // Bind click events to lang buttons
+      document.querySelectorAll('.os-lang-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          switchLang(this.dataset.lang);
+        });
+      });
+
+      // Apply saved language on load
+      if (lang === 'en') {
+        applyLang('en');
+        document.querySelectorAll('.os-lang-btn').forEach(function(b) {
+          var a = b.dataset.lang === 'en';
+          b.style.background = a ? '#fff' : 'transparent';
+          b.style.color = a ? '#0d1f1a' : 'rgba(255,255,255,0.6)';
+        });
+      }
+    })();
+
+    // ---- Article Modal System ----
+    (function(){
+      // Modal HTML
+      var modalHTML = '<div class="article-modal-overlay" id="articleModal">' +
+        '<div class="article-modal">' +
+        '<button class="article-modal-close" id="modalClose">' +
+        '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
+        '</button>' +
+        '<img class="article-modal-img" id="modalImg" src="" alt="">' +
+        '<div class="article-modal-body">' +
+        '<div class="article-modal-tags" id="modalTags"></div>' +
+        '<h3 class="article-modal-title" id="modalTitle"></h3>' +
+        '<p class="article-modal-text" id="modalText"></p>' +
+        '</div></div></div>';
+      document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+      var articles = [
+        {
+          img: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80',
+          tags: ['资本市场'],
+          tagsEn: ['Capital Markets'],
+          title: '信息贬值时代：企业如何建立结构化资本叙事',
+          titleEn: 'The Age of Information Depreciation: How Companies Build Structured Capital Narratives',
+          text: '在 AI 持续生成海量内容的时代，企业公开信息每天都在被稀释。发布时间越晚，市场信任成本越高。缺乏结构化沉淀的企业，会在算法与投资决策模型中逐步失去权重。本文探讨企业如何通过系统化的资本叙事建设，在信息洪流中建立可持续的市场认知优势。',
+          textEn: 'In an era of AI-generated content at scale, corporate public information is diluted daily. The later you publish, the higher the cost of market trust. This article explores how companies can build sustainable market recognition through systematic capital narrative construction.'
+        },
+        {
+          img: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=1200&q=80',
+          tags: ['投资者关系'],
+          tagsEn: ['Investor Relations'],
+          title: '从增长叙事到结构可验证性：资本市场的范式转移',
+          titleEn: 'From Growth Narratives to Structural Verifiability: A Capital Market Paradigm Shift',
+          text: '资本市场正在从"增长叙事"转向"结构可验证性"。投资者不再仅仅关注增长故事，而是要求企业提供可索引、可追溯、可验证的资本信号。ONE SHARE 帮助企业适应这一范式转移，建立清晰、连续、可验证的资本叙事体系。',
+          textEn: 'Capital markets are shifting from growth narratives to structural verifiability. Investors no longer focus solely on growth stories but require indexable, traceable, and verifiable capital signals. ONE SHARE helps companies adapt to this paradigm shift.'
+        },
+        {
+          img: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80',
+          tags: ['股权激励'],
+          tagsEn: ['Equity Incentives'],
+          title: '股权激励设计的三个关键维度',
+          titleEn: 'Three Key Dimensions of Equity Incentive Design',
+          text: '有效的股权激励方案需要在三个维度上达到平衡：激励效果与公司战略的对齐、内部公平性与外部竞争力的兼顾、以及短期激励与长期价值创造的协调。本文深入分析每个维度的设计要点和常见陷阱。',
+          textEn: 'Effective equity incentive schemes need to balance three dimensions: alignment with company strategy, balancing internal fairness with external competitiveness, and coordinating short-term incentives with long-term value creation.'
+        },
+        {
+          img: 'https://images.unsplash.com/photo-1496939376851-89342e90adcd?auto=format&fit=crop&w=1200&q=80',
+          tags: ['跨境上市', '新加坡'],
+          tagsEn: ['Cross-border Listing', 'Singapore'],
+          title: '新加坡作为亚洲资本枢纽的战略价值',
+          titleEn: "Singapore's Strategic Value as Asia's Capital Hub",
+          text: '新加坡凭借其稳定的法治环境、国际化的金融基础设施和战略性的地理位置，已成为亚洲企业跨境资本运作的首选枢纽。本文分析新加坡资本市场的独特优势，以及企业如何利用这一平台实现全球化资本布局。',
+          textEn: "Singapore, with its stable legal environment, international financial infrastructure, and strategic location, has become the preferred hub for cross-border capital operations. This article analyzes Singapore's unique advantages and how companies can leverage this platform."
+        },
+        {
+          img: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1200&q=80',
+          tags: ['市场沟通'],
+          tagsEn: ['Market Communication'],
+          title: '沉默等于被边缘化：AI 时代的企业信息策略',
+          titleEn: 'Silence Equals Marginalization: Corporate Information Strategy in the AI Era',
+          text: '在算法驱动的信息生态中，沉默的企业正在被系统性地边缘化。搜索引擎、投资决策模型和 AI 分析工具都倾向于拥有丰富、结构化、持续更新信息的企业。本文探讨企业如何构建主动、持续的信息输出策略。',
+          textEn: 'In an algorithm-driven information ecosystem, silent companies are being systematically marginalized. Search engines, investment models, and AI tools all favor companies with rich, structured, continuously updated information.'
+        }
+      ];
+
+      var overlay = document.getElementById('articleModal');
+      var modalImg = document.getElementById('modalImg');
+      var modalTags = document.getElementById('modalTags');
+      var modalTitle = document.getElementById('modalTitle');
+      var modalText = document.getElementById('modalText');
+      var lang = localStorage.getItem('oneshare-lang') || 'zh';
+
+      // Open modal
+      document.querySelectorAll('.article-card[data-article]').forEach(function(card) {
+        card.addEventListener('click', function(e) {
+          e.preventDefault();
+          var idx = parseInt(this.dataset.article);
+          var a = articles[idx];
+          if (!a) return;
+          lang = localStorage.getItem('oneshare-lang') || 'zh';
+          modalImg.src = a.img;
+          var tags = lang === 'en' ? a.tagsEn : a.tags;
+          modalTags.innerHTML = tags.map(function(t){ return '<span class="article-modal-tag">' + t + '</span>'; }).join('');
+          modalTitle.textContent = lang === 'en' ? a.titleEn : a.title;
+          modalText.textContent = lang === 'en' ? a.textEn : a.text;
+          overlay.classList.add('active');
+          document.body.style.overflow = 'hidden';
+        });
+      });
+
+      // Close modal
+      document.getElementById('modalClose').addEventListener('click', function(e) {
+        e.stopPropagation();
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+      });
+      overlay.addEventListener('click', function(e) {
+        if (e.target === overlay) {
+          overlay.classList.remove('active');
+          document.body.style.overflow = '';
+        }
+      });
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && overlay.classList.contains('active')) {
+          overlay.classList.remove('active');
+          document.body.style.overflow = '';
+        }
+      });
+    })();
+
+  </script>
+</body>
+</html>
