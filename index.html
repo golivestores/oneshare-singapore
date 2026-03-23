@@ -2742,7 +2742,9 @@
       .mobile-logo-wrap { width: 35%; padding: 0.5rem 0.75rem; }
       .mobile-nav-right { width: 65%; }
 
-      /* Hero */
+      /* Hero — disable sticky on mobile so page scrolls naturally */
+      .hero-section { position: relative; height: auto; min-height: 100vh; }
+      .about-section { position: relative; }
       .hero-heading { font-size: 28px; }
       .hero-content { padding: 0 1rem 2rem; }
       .hero-subtitle { font-size: 0.875rem; margin-top: 1.25rem; }
@@ -2844,6 +2846,11 @@
     @media (max-width: 768px) {
       /* General */
       body { -webkit-text-size-adjust: 100%; }
+
+      /* Disable sticky card-stacking on mobile — normal scroll instead */
+      .hero-section { position: relative; height: auto; min-height: 100vh; }
+      .about-section { position: relative; }
+      .stats-section { position: relative; }
 
       /* Header */
       .head-banner__container { flex-wrap: wrap; gap: 8px; padding: 0.5rem 2.5rem 0.5rem 0.75rem; justify-content: center; text-align: center; }
