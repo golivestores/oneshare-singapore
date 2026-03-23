@@ -424,10 +424,11 @@
     .mobile-header {
       width: 100%;
       position: absolute;
+      top: 3.5rem;
       z-index: 100;
       display: flex;
       align-items: center;
-      padding: 2rem 0.5rem;
+      padding: 0.75rem 0.5rem;
       color: white;
     }
     .mobile-logo-wrap {
@@ -1018,10 +1019,10 @@
 
     /* ---- Capital text — artistic editorial ---- */
     .capital-text-reveal .cap-intro {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 1rem;
-      line-height: 1.8;
-      color: #888;
+      font-family: 'poppins', sans-serif;
+      font-size: 0.875rem;
+      line-height: 1.7;
+      color: #898c8a;
       margin-bottom: 1.25rem;
       opacity: 0;
       transform: translateX(-30px);
@@ -1043,10 +1044,10 @@
       color: #1a8a6e;
     }
     .capital-text-reveal .cap-body {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 1rem;
-      line-height: 1.8;
-      color: #666;
+      font-family: 'poppins', sans-serif;
+      font-size: 0.875rem;
+      line-height: 1.7;
+      color: #898c8a;
       margin-bottom: 1.5rem;
       opacity: 0;
       transform: translateX(-30px);
@@ -2756,7 +2757,7 @@
     /* ---- Extra-small phones (≤ 414px) ---- */
     @media (max-width: 414px) {
       /* Header */
-      .mobile-header { padding: 1rem 0.5rem; }
+      .mobile-header { top: 3rem; padding: 0.5rem 0.5rem; }
       .mobile-burger { width: 60px; padding: 0.75rem; }
       .mobile-logo-wrap { width: 35%; padding: 0.5rem 0.75rem; }
       .mobile-nav-right { width: 65%; }
@@ -2778,7 +2779,7 @@
       .capital-row { gap: 1.5rem; margin-bottom: 3rem; }
       .capital-text-reveal .cap-highlight { font-size: 1.25rem; }
       .capital-text-reveal .cap-intro,
-      .capital-text-reveal .cap-body { font-size: 1rem; }
+      .capital-text-reveal .cap-body { font-size: 0.875rem; }
 
       /* Give cards section enough padding so Venn diagram is visible */
       .cards-expertises { padding-top: 2rem; }
