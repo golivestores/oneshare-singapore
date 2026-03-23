@@ -17,19 +17,9 @@
       font-family: 'poppins', Helvetica, Arial, sans-serif;
       background: #000;
       color: #fff;
-      overflow-x: hidden;
+      overflow-x: clip;
     }
 
-    /* ---- Canvas (WebGL aurora + particles) ---- */
-    #webgl {
-      display: block;
-      width: 100%;
-      height: 100vh;
-      position: fixed;
-      z-index: 0;
-      top: 0;
-      left: 0;
-    }
 
     /* ---- Announcement Banner ---- */
     .head-banner {
@@ -348,82 +338,103 @@
       opacity: 0;
       animation: heroFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.9s forwards;
     }
-    .hero-tile {
-      opacity: 0;
-    }
-
-    /* ---- Floating Company Tiles ---- */
-    .hero-tiles-grid {
+    /* ---- Keyword Cloud ---- */
+    .hero-cloud {
       position: absolute;
       inset: 0;
       z-index: 1;
       pointer-events: none;
+      overflow: hidden;
     }
-    .hero-tile {
+    @keyframes kwFloat {
+      0%, 100% { transform: translate(0, 0); }
+      25% { transform: translate(6px, -8px); }
+      50% { transform: translate(-4px, -14px); }
+      75% { transform: translate(8px, -6px); }
+    }
+    .kw-pill {
       position: absolute;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      pointer-events: auto;
-      cursor: pointer;
-    }
-    .hero-tile-icon {
-      width: 64px;
-      height: 64px;
-      border-radius: 14px;
-      background: rgba(255,255,255,0.45);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-      transition: background 0.3s;
-    }
-    .hero-tile:hover .hero-tile-icon {
-      background: rgba(255,255,255,0.7);
-    }
-    .hero-tile-icon svg {
-      width: 32px;
-      height: 32px;
-    }
-    .hero-tile-name {
-      font-size: 13px;
+      font-family: 'Montserrat', sans-serif;
       font-weight: 600;
       color: #0d2e25;
-      font-family: 'Montserrat', sans-serif;
       white-space: nowrap;
+      pointer-events: auto;
+      cursor: default;
+      border-radius: 999px;
+      padding: 8px 20px;
+      background: rgba(255,255,255,0.25);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      border: 1px solid rgba(255,255,255,0.35);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+      transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+      opacity: 0;
+      animation: heroFadeUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards;
     }
-    /* Tile positions — tighter vertical spread */
-    .hero-tile.tile-1 { top: 10%; left: 4%; }
-    .hero-tile.tile-2 { top: 30%; left: 9%; }
-    .hero-tile.tile-3 { top: 52%; left: 4%; }
-    .hero-tile.tile-4 { top: 73%; left: 10%; }
-    .hero-tile.tile-5 { top: 10%; right: 4%; }
-    .hero-tile.tile-6 { top: 30%; right: 9%; }
-    .hero-tile.tile-7 { top: 52%; right: 4%; }
-    .hero-tile.tile-8 { top: 73%; right: 10%; }
-
-    /* Gentle floating animation */
-    @keyframes tileFloat {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
+    .kw-pill:hover {
+      background: rgba(255,255,255,0.55);
+      transform: scale(1.1) !important;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
     }
-    .hero-tile.tile-1 { animation: heroFadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.3s forwards, tileFloat 5s ease-in-out 1.5s infinite; }
-    .hero-tile.tile-2 { animation: heroFadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.45s forwards, tileFloat 6s ease-in-out 2s infinite; }
-    .hero-tile.tile-3 { animation: heroFadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.6s forwards, tileFloat 5.5s ease-in-out 1.8s infinite; }
-    .hero-tile.tile-4 { animation: heroFadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.75s forwards, tileFloat 6.5s ease-in-out 2.2s infinite; }
-    .hero-tile.tile-5 { animation: heroFadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.35s forwards, tileFloat 6s ease-in-out 1.6s infinite; }
-    .hero-tile.tile-6 { animation: heroFadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.5s forwards, tileFloat 5s ease-in-out 2.1s infinite; }
-    .hero-tile.tile-7 { animation: heroFadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.65s forwards, tileFloat 5.8s ease-in-out 1.9s infinite; }
-    .hero-tile.tile-8 { animation: heroFadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.8s forwards, tileFloat 6.2s ease-in-out 2.3s infinite; }
+    /* Sizes */
+    .kw-lg { font-size: 18px; padding: 10px 26px; }
+    .kw-md { font-size: 14px; }
+    .kw-sm { font-size: 11px; padding: 6px 14px; color: rgba(13,46,37,0.6); }
 
-    .hero-tile:hover {
-      animation-play-state: paused, paused;
-      transform: scale(1.08);
-    }
+    /* Positions — scattered around center text */
+    .kw-1  { top: 10%; left: 3%;  animation-delay: 0.2s; animation: heroFadeUp 0.6s 0.2s forwards, kwFloat 7s ease-in-out 1.2s infinite; }
+    .kw-2  { top: 24%; left: 7%;  animation-delay: 0.35s; animation: heroFadeUp 0.6s 0.35s forwards, kwFloat 8s ease-in-out 1.5s infinite; }
+    .kw-3  { top: 44%; left: 2%;  animation-delay: 0.5s; animation: heroFadeUp 0.6s 0.5s forwards, kwFloat 6.5s ease-in-out 1.8s infinite; }
+    .kw-4  { top: 62%; left: 6%;  animation-delay: 0.6s; animation: heroFadeUp 0.6s 0.6s forwards, kwFloat 7.5s ease-in-out 2s infinite; }
+    .kw-5  { top: 78%; left: 3%;  animation-delay: 0.7s; animation: heroFadeUp 0.6s 0.7s forwards, kwFloat 8.5s ease-in-out 1.4s infinite; }
+    .kw-6  { top: 8%;  right: 3%; animation-delay: 0.25s; animation: heroFadeUp 0.6s 0.25s forwards, kwFloat 7.2s ease-in-out 1.6s infinite; }
+    .kw-7  { top: 22%; right: 5%; animation-delay: 0.4s; animation: heroFadeUp 0.6s 0.4s forwards, kwFloat 6.8s ease-in-out 1.9s infinite; }
+    .kw-8  { top: 42%; right: 2%; animation-delay: 0.55s; animation: heroFadeUp 0.6s 0.55s forwards, kwFloat 7.8s ease-in-out 2.1s infinite; }
+    .kw-9  { top: 60%; right: 7%; animation-delay: 0.65s; animation: heroFadeUp 0.6s 0.65s forwards, kwFloat 6.2s ease-in-out 1.3s infinite; }
+    .kw-10 { top: 78%; right: 4%; animation-delay: 0.75s; animation: heroFadeUp 0.6s 0.75s forwards, kwFloat 8s ease-in-out 2.3s infinite; }
+    .kw-11 { top: 88%; left: 15%; animation-delay: 0.8s; animation: heroFadeUp 0.6s 0.8s forwards, kwFloat 7s ease-in-out 1.7s infinite; }
+    .kw-12 { top: 88%; right: 14%; animation-delay: 0.85s; animation: heroFadeUp 0.6s 0.85s forwards, kwFloat 6.5s ease-in-out 2.2s infinite; }
 
+    /* ---- Tablet keyword cloud (≤1023px) ---- */
     @media (max-width: 1023px) {
-      .hero-tile { display: none; }
+      .kw-pill { font-size: 10px; padding: 5px 12px; }
+      .kw-lg { font-size: 12px; padding: 6px 14px; }
+      .kw-sm { font-size: 9px; padding: 4px 10px; }
+      /* Reposition for narrower screen */
+      .kw-1  { top: 5%;  left: 5%; }
+      .kw-2  { top: 12%; left: auto; right: 8%; }
+      .kw-3  { top: 20%; left: 3%; }
+      .kw-4  { display: none; }
+      .kw-5  { top: 75%; left: 5%; }
+      .kw-6  { top: 5%;  right: 5%; left: auto; }
+      .kw-7  { top: 75%; right: 5%; left: auto; }
+      .kw-8  { display: none; }
+      .kw-9  { top: 82%; left: 30%; right: auto; }
+      .kw-10 { top: 82%; right: 8%; left: auto; }
+      .kw-11 { top: 88%; left: 8%; }
+      .kw-12 { top: 88%; right: 10%; }
+    }
+
+    /* ---- Mobile keyword cloud (≤414px) ---- */
+    @media (max-width: 414px) {
+      .kw-pill { font-size: 8px; padding: 4px 9px; }
+      .kw-lg { font-size: 10px; padding: 5px 11px; }
+      .kw-sm { font-size: 7px; padding: 3px 8px; }
+      /* Top area — above title, below banner+header */
+      .kw-1  { top: 15%; left: 4%; }
+      .kw-6  { top: 15%; right: 4%; left: auto; }
+      .kw-2  { top: 22%; left: 2%; right: auto; }
+      .kw-3  { top: 22%; right: 3%; left: auto; }
+      /* Bottom area — below subtitle */
+      .kw-5  { top: 78%; left: 3%; }
+      .kw-7  { top: 78%; right: 3%; left: auto; }
+      .kw-9  { top: 85%; left: 20%; right: auto; }
+      .kw-10 { top: 85%; right: 5%; left: auto; }
+      .kw-11 { top: 91%; left: 5%; }
+      .kw-12 { top: 91%; right: 12%; }
+      /* Hide ones that overlap title area */
+      .kw-4  { display: none; }
+      .kw-8  { display: none; }
     }
 
     /* ---- Responsive (Tablet / Mobile) ---- */
@@ -713,17 +724,23 @@
     .stats-section {
       position: relative;
       z-index: 5;
-      background: #fff;
-      border-top-left-radius: 24px;
-      border-top-right-radius: 24px;
+      background: #2dd4a8;
       box-shadow: 0 -8px 40px rgba(0,0,0,0.12);
     }
     .stats-inner {
-      max-width: 1400px;
+      background: #fff;
+      border-top-left-radius: 24px;
+      border-top-right-radius: 24px;
+      max-width: 100%;
       padding: 4rem 1rem;
       margin: 0 auto;
       position: sticky;
       top: 0;
+    }
+    .stats-inner > * {
+      max-width: 1400px;
+      margin-left: auto;
+      margin-right: auto;
     }
     @media (min-width: 1280px) {
       .stats-inner {
@@ -846,6 +863,8 @@
       border-top-right-radius: 1rem;
       position: relative;
       z-index: 10;
+      margin-top: -1rem;
+      padding-top: 1rem;
     }
     .container-inner {
       max-width: 1400px;
@@ -1270,9 +1289,9 @@
       gap: 1.5rem;
       height: calc(var(--cards-count) * 80vh + 160px);
     }
-    @media (max-width: 380px) {
+    @media (max-width: 480px) {
       .expertises-container {
-        height: calc(var(--cards-count) * 100vh + 160px);
+        height: calc(var(--cards-count) * 130vh + 160px);
       }
     }
     @media (min-width: 1024px) {
@@ -2360,84 +2379,133 @@
     }
     .footer-nav {
       max-width: 1400px;
-      padding: 5rem 1rem;
+      padding: 4rem 2rem 3rem;
       margin: 0 auto;
       display: flex;
       flex-wrap: wrap;
+      gap: 3rem;
+    }
+    @media (min-width: 1024px) {
+      .footer-nav { flex-wrap: nowrap; gap: 4rem; padding: 5rem 2rem 4rem; }
     }
     @media (min-width: 1280px) {
-      .footer-nav { padding: 5rem 0; }
+      .footer-nav { padding: 5rem 0 4rem; }
     }
-    .footer-logo {
+    .footer-col-brand {
       width: 100%;
     }
     @media (min-width: 1024px) {
-      .footer-logo { width: 58.333%; }
+      .footer-col-brand { width: 35%; }
     }
-    .footer-logo img {
-      width: 8.333%;
-      min-width: 40px;
-    }
-    .footer-links-wrap {
-      width: 100%;
-    }
-    @media (min-width: 1024px) {
-      .footer-links-wrap { width: 25%; }
-    }
-    .footer-links {
-      width: 100%;
-      padding: 2.5rem 0;
-      list-style: none;
-    }
-    @media (min-width: 1024px) {
-      .footer-links { padding: 0; }
-    }
-    .footer-links li {
-      margin-bottom: 0.5rem;
-    }
-    .footer-links li a {
+    .footer-company-name {
+      font-family: 'Montserrat', Helvetica, Arial, sans-serif;
+      font-weight: 700;
+      font-size: 1.05rem;
       color: #fff;
+      margin-bottom: 1.25rem;
+      letter-spacing: 0.02em;
+    }
+    .footer-tagline {
+      color: rgba(255,255,255,0.45);
+      font-size: 0.875rem;
+      line-height: 1.8;
+      max-width: 320px;
+    }
+    .footer-col-contact {
+      width: 100%;
+    }
+    @media (min-width: 1024px) {
+      .footer-col-contact { width: 35%; }
+    }
+    .footer-col-contact-title {
+      font-family: 'Montserrat', Helvetica, Arial, sans-serif;
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: #fff;
+      margin-bottom: 1.25rem;
+      letter-spacing: 0.02em;
+    }
+    .footer-col-contact p {
+      color: rgba(255,255,255,0.45);
+      font-size: 0.875rem;
+      line-height: 1.8;
+      margin: 0;
+    }
+    .footer-col-contact a {
+      color: rgba(255,255,255,0.65);
       text-decoration: none;
-      font-size: 1rem;
-      transition: opacity 0.3s;
+      transition: color 0.3s;
     }
-    .footer-links li a:hover {
-      opacity: 0.6;
+    .footer-col-contact a:hover {
+      color: #1a8a6e;
     }
-    .footer-social {
+    .footer-col-social {
       width: 100%;
       display: flex;
+      align-items: flex-start;
     }
     @media (min-width: 1024px) {
-      .footer-social { width: 16.666%; justify-content: flex-end; }
+      .footer-col-social { width: 30%; justify-content: flex-end; }
     }
-    .footer-social ul {
+    .footer-col-social ul {
       display: flex;
       gap: 0.75rem;
       list-style: none;
     }
-    .footer-social img {
-      width: 25px;
-      height: 25px;
+    .footer-col-social li a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      transition: all 0.3s;
+    }
+    .footer-col-social li a:hover {
+      background: rgba(26,138,110,0.2);
+      border-color: rgba(26,138,110,0.4);
+    }
+    .footer-col-social svg {
+      width: 18px;
+      height: 18px;
+    }
+    .footer-col-social img {
+      width: 22px;
+      height: 22px;
+      object-fit: contain;
+    }
+    .footer-divider {
+      max-width: 1400px;
+      margin: 0 auto;
+      border: none;
+      border-top: 1px solid rgba(255,255,255,0.08);
     }
     .footer-bottom {
       max-width: 1400px;
-      padding: 0 1rem 2.5rem;
+      padding: 1.75rem 2rem 2.5rem;
       margin: 0 auto;
       display: flex;
-      align-items: center;
+      justify-content: center;
+      text-align: center;
     }
     @media (min-width: 1280px) {
-      .footer-bottom { padding: 0 0 2.5rem; }
+      .footer-bottom { padding: 1.75rem 0 2.5rem; }
     }
     .footer-bottom a {
-      color: #898c8a;
+      color: rgba(255,255,255,0.3);
       text-decoration: none;
-      font-size: 0.75rem;
+      font-size: 0.8rem;
+      transition: color 0.3s;
+    }
+    .footer-bottom a:hover {
+      color: #1a8a6e;
     }
     .footer-bottom span {
-      color: #898c8a;
-      font-size: 0.75rem;
+      color: rgba(255,255,255,0.3);
+      font-size: 0.8rem;
+      letter-spacing: 0.02em;
     }
     .footer-bottom-left {
       width: 58.333%;
@@ -2673,6 +2741,191 @@
       .pv-tag span { font-size: 11px; }
     }
 
+    /* ============================================
+       COMPREHENSIVE MOBILE OPTIMIZATION
+       ============================================ */
+
+    /* ---- Extra-small phones (≤ 414px) ---- */
+    @media (max-width: 414px) {
+      /* Header */
+      .mobile-header { padding: 1rem 0.5rem; }
+      .mobile-burger { width: 60px; padding: 0.75rem; }
+      .mobile-logo-wrap { width: 35%; padding: 0.5rem 0.75rem; }
+      .mobile-nav-right { width: 65%; }
+
+      /* Hero */
+      .hero-heading { font-size: 28px; }
+      .hero-content { padding: 0 1rem 2rem; }
+      .hero-subtitle { font-size: 0.9rem; margin-top: 1.25rem; }
+
+      /* Expertise title */
+      .expertise-title { font-size: 1.5rem; padding: 2rem 0; }
+
+      /* Capital section */
+      .capital-left { min-width: unset; }
+      .capital-right { min-width: unset; }
+      .capital-row { gap: 1.5rem; margin-bottom: 3rem; }
+      .capital-text-reveal .cap-highlight { font-size: 1.3rem; }
+      .capital-text-reveal .cap-intro,
+      .capital-text-reveal .cap-body { font-size: 0.95rem; }
+
+      /* Give cards section enough padding so Venn diagram is visible */
+      .cards-expertises { padding-top: 2rem; }
+      .container-inner { padding: 3rem 1rem 0; }
+
+      /* Venn diagram */
+      .venn-stage { width: 260px; height: 300px; }
+      .venn-circle { width: 155px; height: 155px; }
+      .venn-top { margin-left: -77px; }
+      .venn-label { font-size: 11px; }
+      .venn-icon { width: 26px; height: 26px; }
+      .venn-overlap { font-size: 9px; padding: 3px 8px; border-radius: 6px; }
+      .venn-ol-center { width: 48px; height: 48px; margin-top: -24px; margin-left: -24px; font-size: 8px; }
+
+      /* Expertise cards */
+      .expertises-container {
+        height: calc(var(--cards-count) * 130vh + 160px);
+      }
+      .expertise-card {
+        padding: 1.5rem 1rem;
+        border-radius: 20px;
+        height: 130vh;
+      }
+      .card-flex { flex-direction: column; flex-wrap: nowrap; }
+      .card-left { width: 100%; flex-shrink: 0; }
+      .card-right { width: 100%; justify-content: center; padding: 1.5rem 0; flex-shrink: 0; }
+      .card-title { font-size: 1.25rem; line-height: 1.2; }
+      .card-desc { font-size: 0.8rem; padding: 0.75rem 0; }
+      .card-tags { padding-top: 1rem; }
+      .tag-icon { width: 40px; padding: 0.5rem; }
+      .tag-text { font-size: 0.75rem; padding: 0.4rem 0.75rem; }
+      .card-right img,
+      .card-right object { max-width: 220px !important; max-height: 220px !important; }
+
+      /* Preloader mobile */
+      .pre-terminal { padding: 0.5rem; display: flex; flex-direction: column; justify-content: flex-start; }
+      .pre-ticker-row { font-size: 9px; line-height: 1.5; }
+      .pre-center { padding: 0 1rem; }
+      .pre-brand { font-size: 2.2rem; }
+      .pre-numbers { font-size: 0.65rem; letter-spacing: 0.2em; margin-bottom: 1rem; }
+      .pre-tagline { font-size: 0.6rem; letter-spacing: 0.15em; margin-top: 1rem; }
+      .pre-data-strip { gap: 0.75rem; bottom: 1.5rem; padding: 0 1rem; }
+      .pre-data-val { font-size: 0.8rem; }
+      .pre-data-label { font-size: 0.5rem; letter-spacing: 0.08em; }
+
+      /* Teams section */
+      .teams-section { padding: 120px 0 100px; }
+      .testimonial { position: relative !important; top: auto !important; bottom: auto !important; left: auto !important; right: auto !important; width: 100%; margin-bottom: 0.75rem; }
+      .testimonial .quote-text { font-size: 0.7rem; }
+      .testimonial .quote-name { font-size: 0.7rem; }
+      .team-cta-inner { padding: 1.25rem; border-radius: 20px; }
+      .team-cta-title { font-size: 1rem; }
+
+      /* Perspectives / Articles */
+      .perspectives-section { padding: 3rem 0; }
+      .perspectives-heading { font-size: 1.25rem; }
+      .article-card { flex: 0 0 85%; }
+      .article-card-inner { border-radius: 20px; padding: 1.25rem; }
+      .article-title { font-size: 1rem; }
+      .articles-track { padding: 2rem 0.75rem 0; }
+
+      /* Contact form */
+      .methodologie-section { padding: 4rem 0 3rem !important; }
+      .methodologie-heading { font-size: 1.25rem !important; }
+      .methodologie-container { padding: 0 0.75rem; }
+
+      /* Footer */
+      .footer-nav { padding: 3rem 1.25rem 2rem; gap: 2rem; }
+      .footer-company-name { font-size: 0.9rem; }
+      .footer-tagline { font-size: 0.8rem; max-width: 100%; }
+      .footer-col-contact-title { font-size: 0.9rem; }
+      .footer-col-contact p { font-size: 0.8rem; }
+      .footer-col-social li a { width: 36px; height: 36px; }
+      .footer-col-social svg { width: 16px; height: 16px; }
+      .footer-col-social img { width: 20px; height: 20px; }
+      .footer-bottom { padding: 1.25rem 1rem 2rem; }
+      .footer-bottom span,
+      .footer-bottom a { font-size: 0.7rem; }
+    }
+
+    /* ---- Small phones & tablets (≤ 768px) ---- */
+    @media (max-width: 768px) {
+      /* General */
+      body { -webkit-text-size-adjust: 100%; }
+
+      /* Header */
+      .head-banner__container { flex-wrap: wrap; gap: 8px; padding: 0.5rem 2.5rem 0.5rem 0.75rem; justify-content: center; text-align: center; }
+      .head-banner__container-left { gap: 10px; justify-content: center; width: 100%; }
+      .head-banner__text { font-size: 0.75rem; text-align: center; }
+      .head-banner__link { margin: 0 auto; }
+
+      /* Preloader */
+      .pre-terminal { padding: 0.75rem; }
+      .pre-ticker-row { font-size: 10px; line-height: 1.6; }
+      .pre-brand { font-size: clamp(2rem, 8vw, 4rem); }
+      .pre-numbers { font-size: 0.7rem; }
+      .pre-data-strip { gap: 1.25rem; bottom: 1.5rem; flex-wrap: wrap; justify-content: center; padding: 0 1.5rem; }
+      .pre-data-val { font-size: 0.9rem; }
+      .pre-data-label { font-size: 0.55rem; }
+
+      /* Expertise cards */
+      .expertise-card { overflow: hidden; }
+      .expertises-container {
+        height: calc(var(--cards-count) * 110vh + 160px);
+      }
+      .expertise-card {
+        height: 110vh;
+      }
+
+      /* Capital section */
+      .capital-left { min-width: unset; width: 100%; }
+      .capital-right { min-width: unset; width: 100%; }
+      .capital-row { margin-bottom: 3rem; }
+
+      /* Teams — stack testimonials vertically on mobile */
+      .testimonial-myriam { top: auto; left: auto; }
+
+      /* Contact form — single column inputs */
+      .methodologie-flex { flex-direction: column; }
+      .methodologie-left,
+      .methodologie-right { width: 100% !important; }
+
+      /* Footer */
+      .footer-nav { gap: 2rem; }
+      .footer-col-social { justify-content: flex-start; }
+    }
+
+    /* ---- Tablet portrait (≤ 1023px) ---- */
+    @media (max-width: 1023px) {
+      /* Teams — make testimonials flow naturally */
+      .teams-section { padding: 150px 0 120px; }
+      .testimonial { width: 100%; }
+
+      /* Contact form card padding */
+      .methodologie-right > div { padding: 1.5rem !important; border-radius: 20px !important; }
+
+      /* Form input min-width fix */
+      .methodologie-right input,
+      .methodologie-right select,
+      .methodologie-right textarea { min-width: 0 !important; }
+    }
+
+    /* ---- Extra-small: stats & green pills ---- */
+    @media (max-width: 414px) {
+      .stats-heading { font-size: 22px; line-height: 1.5; }
+      .stats-inner { padding: 2.5rem 1rem; }
+      .green-pill { height: 35px; margin: 0.15rem 0.25rem; }
+      .green-pill img { height: 100%; }
+      .green-pill span { font-size: 0.7rem; padding: 0 0.6rem; }
+    }
+    @media (max-width: 768px) {
+      .stats-heading { font-size: 26px; }
+      .green-pill { height: 40px; }
+    }
+
+    /* ---- Prevent horizontal scroll globally ---- */
+    body { overflow-x: clip; }
+
   </style>
 </head>
 
@@ -2692,8 +2945,6 @@
     </div>
   </div>
 
-  <!-- ============ WebGL Canvas (aurora + particles) ============ -->
-  <canvas id="webgl"></canvas>
 
   <!-- ============ Main Content ============ -->
   <div class="page-wrapper">
@@ -2732,14 +2983,12 @@
                   <ul class="nav-links-left">
                     <li><a href="#services" data-zh="我们与服务" data-en="About &amp; Services">About &amp; Services</a></li>
                     <li><a href="#insights" data-zh="新闻与洞察" data-en="News &amp; Insights">News &amp; Insights</a></li>
-                    <li><a href="#contact" data-zh="联系我们" data-en="Contact">Contact</a></li>
                   </ul>
                   <div class="nav-center-logo">
                     <a href="#hero"><img src="one-share-logo.png" alt="ONE SHARE"></a>
                   </div>
                   <ul class="nav-links-right">
-                    <li><a href="#team" data-zh="团队" data-en="Team">Team</a></li>
-                    <li><a href="#contact" data-zh="预约沟通" data-en="Schedule a Call">Schedule a Call</a></li>
+                    <li><a href="#contact" data-zh="联系我们" data-en="Contact">Contact</a></li>
                     <li>
                       <div style="display:inline-flex;align-items:center;gap:4px;background:rgba(13,46,37,0.12);border-radius:20px;padding:3px;">
                         <button class="os-lang-btn" data-lang="zh" style="padding:5px 10px;border:none;cursor:pointer;border-radius:16px;font-size:11px;font-weight:600;background:transparent;color:rgba(13,46,37,0.4);transition:0.2s;">华文</button>
@@ -2764,66 +3013,31 @@
                 </button>
               </div>
             </div>
-            <!-- Floating tiles around text -->
-            <div class="hero-tiles-grid">
-              <!-- Left side tiles -->
-              <div class="hero-tile tile-1" data-hover-color="#3a9fd8">
-                <div class="hero-tile-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#0d2e25" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
-                </div>
-                <span class="hero-tile-name" data-zh="投资者关系" data-en="IR / PR">IR / PR</span>
-              </div>
-              <div class="hero-tile tile-2" data-hover-color="#c9a84e">
-                <div class="hero-tile-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#0d2e25" stroke-width="1.5"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a4 4 0 00-8 0v2"/><circle cx="12" cy="14" r="2"/></svg>
-                </div>
-                <span class="hero-tile-name" data-zh="股权激励" data-en="ESOP">ESOP</span>
-              </div>
-              <div class="hero-tile tile-3" data-hover-color="#8b5cf6">
-                <div class="hero-tile-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#0d2e25" stroke-width="1.5"><path d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3"/><path d="M12 8v8m-4-4h8"/></svg>
-                </div>
-                <span class="hero-tile-name" data-zh="跨境并购" data-en="M&amp;A">M&amp;A</span>
-              </div>
-              <div class="hero-tile tile-4" data-hover-color="#e05252">
-                <div class="hero-tile-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#0d2e25" stroke-width="1.5"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
-                </div>
-                <span class="hero-tile-name" data-zh="上市服务" data-en="IPO">IPO</span>
-              </div>
-              <!-- Right side tiles -->
-              <div class="hero-tile tile-5" data-hover-color="#c9a84e">
-                <div class="hero-tile-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#0d2e25" stroke-width="1.5"><path d="M9 12l2 2 4-4"/><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                </div>
-                <span class="hero-tile-name" data-zh="合规" data-en="Compliance">Compliance</span>
-              </div>
-              <div class="hero-tile tile-6" data-hover-color="#3a9fd8">
-                <div class="hero-tile-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#0d2e25" stroke-width="1.5"><path d="M16 8v-4a2 2 0 00-2-2h-4a2 2 0 00-2 2v4"/><path d="M2 12h20"/><rect x="2" y="8" width="20" height="14" rx="2"/></svg>
-                </div>
-                <span class="hero-tile-name" data-zh="估值" data-en="Valuation">Valuation</span>
-              </div>
-              <div class="hero-tile tile-7" data-hover-color="#8b5cf6">
-                <div class="hero-tile-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#0d2e25" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 000 4h4a2 2 0 010 4H8"/><path d="M12 6v2m0 8v2"/></svg>
-                </div>
-                <span class="hero-tile-name" data-zh="资本结构" data-en="Capital">Capital</span>
-              </div>
-              <div class="hero-tile tile-8" data-hover-color="#e05252">
-                <div class="hero-tile-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#0d2e25" stroke-width="1.5"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
-                </div>
-                <span class="hero-tile-name" data-zh="战略咨询" data-en="Strategy">Strategy</span>
-              </div>
+            <!-- Keyword cloud -->
+            <div class="hero-cloud">
+              <!-- Left side -->
+              <span class="kw-pill kw-lg kw-1" data-zh="投资者关系" data-en="Investor Relations">Investor Relations</span>
+              <span class="kw-pill kw-md kw-2" data-zh="股权激励" data-en="ESOP">ESOP</span>
+              <span class="kw-pill kw-lg kw-3" data-zh="跨境上市" data-en="Cross-border IPO">Cross-border IPO</span>
+              <span class="kw-pill kw-sm kw-4" data-zh="合规架构" data-en="Compliance">Compliance</span>
+              <span class="kw-pill kw-md kw-5" data-zh="资本叙事" data-en="Capital Narrative">Capital Narrative</span>
+              <!-- Right side -->
+              <span class="kw-pill kw-md kw-6" data-zh="市值管理" data-en="Market Cap Mgmt">Market Cap Mgmt</span>
+              <span class="kw-pill kw-lg kw-7" data-zh="跨境并购" data-en="Cross-border M&amp;A">Cross-border M&amp;A</span>
+              <span class="kw-pill kw-sm kw-8" data-zh="信息披露" data-en="Disclosure">Disclosure</span>
+              <span class="kw-pill kw-lg kw-9" data-zh="财富管理" data-en="Wealth Management">Wealth Management</span>
+              <span class="kw-pill kw-sm kw-10" data-zh="路演策略" data-en="Roadshow">Roadshow</span>
+              <!-- Bottom scattered -->
+              <span class="kw-pill kw-sm kw-11" data-zh="估值优化" data-en="Valuation">Valuation</span>
+              <span class="kw-pill kw-md kw-12" data-zh="资本结构" data-en="Capital Structure">Capital Structure</span>
             </div>
 
             <!-- Center content -->
             <div class="hero-content">
               <h1 class="hero-heading">
                 <strong data-zh="当每一股" data-en="When every share">When every share</strong>
-                <em data-zh="都被正确理解，" data-en="is truly understood,">is truly understood,</em>
-                <strong data-zh="企业价值才真正被看见。" data-en="value is truly seen.">value is truly seen.</strong>
+                <em data-zh="都被正确理解，" data-en="is properly understood,">is properly understood,</em>
+                <strong data-zh="企业价值才真正被看见。" data-en="true enterprise value becomes visible.">true enterprise value becomes visible.</strong>
               </h1>
               <p class="hero-subtitle" data-zh="围绕投资者关系、股权激励与跨境资本整合，协助企业构建长期且可持续的价值路径。" data-en="We go to extraordinary lengths for visionary companies — from investor relations to equity incentives and cross-border capital integration.">We go to extraordinary lengths for visionary companies — from investor relations to equity incentives and cross-border capital integration.</p>
             </div>
@@ -2836,7 +3050,7 @@
               <div class="about-left">
                 <p class="about-section-eyebrow" data-zh="关于 ONE SHARE" data-en="About ONE SHARE">About ONE SHARE</p>
                 <h2 class="about-section-heading" data-zh="企业的价值不会自然被看见——它需要被持续、清晰地安排。" data-en="Enterprise value doesn't reveal itself — it must be continuously and clearly structured.">Enterprise value doesn't reveal itself — it must be continuously and clearly structured.</h2>
-                <p class="about-section-text" data-zh="ONE SHARE 立足新加坡，围绕企业在资本市场中的表达与结构展开工作。从投资者关系、股权激励到跨境资本安排，我们参与企业不同阶段的资本进程。这些工作看似分散，实则彼此关联。" data-en="Based in Singapore, ONE SHARE works on how companies express and structure themselves in capital markets. From investor relations and equity incentives to cross-border capital arrangements, we participate in every stage of a company's capital journey. These efforts may seem disparate, but they are deeply interconnected.">Based in Singapore, ONE SHARE works on how companies express and structure themselves in capital markets. From investor relations and equity incentives to cross-border capital arrangements, we participate in every stage of a company's capital journey. These efforts may seem disparate, but they are deeply interconnected.</p>
+                <p class="about-section-text" data-zh="ONE SHARE 立足新加坡，围绕企业在资本市场中的表达与结构展开工作。从投资者关系、股权激励到跨境并购，我们参与企业不同阶段的资本进程。这些工作看似分散，实则彼此关联。 企业在资本市场中的位置，往往由一系列结构安排所共同决定。" data-en="ONE SHARE is based in Singapore, working across how companies position and express themselves in the capital markets. From investor relations and equity structuring to cross-border transactions, we support companies at different stages of their capital journey. While these functions may appear separate, they are inherently connected. A company's position in the capital markets is ultimately shaped by a series of structural decisions.">ONE SHARE is based in Singapore, working across how companies position and express themselves in the capital markets. From investor relations and equity structuring to cross-border transactions, we support companies at different stages of their capital journey. While these functions may appear separate, they are inherently connected. A company's position in the capital markets is ultimately shaped by a series of structural decisions.</p>
               </div>
               <!-- Right: 3-piece puzzle venn -->
               <div class="about-right">
@@ -2893,10 +3107,10 @@
                   <!-- Left: editorial text with motion -->
                   <div class="capital-left">
                     <div class="capital-text-reveal">
-                      <p class="cap-intro" data-zh="长期参与企业在不同资本阶段的事务之后，我们逐渐形成一个判断——" data-en="After years of working with companies across every capital stage, we arrived at one conviction —">After years of working with companies across every capital stage, we arrived at one conviction —</p>
-                      <h3 class="cap-highlight" data-zh="资本市场并不是单向关系。" data-en="Capital markets are not a one-way relationship.">Capital markets are <em>not</em> a one-way relationship.</h3>
-                      <p class="cap-body" data-zh="服务发行人，并不能完整理解市场。只站在投资人一侧，也无法看到企业内部的真实运转。企业在资本市场中的状态，往往由多方角色共同塑造。" data-en="Serving issuers alone won't give you the full picture. Standing only on the investor side won't reveal how a company truly operates. A company's capital position is shaped by multiple players working together.">Serving issuers alone won't give you the full picture. Standing only on the investor side won't reveal how a company truly operates. A company's capital position is shaped by <span class="cap-accent">multiple players</span> working together.</p>
-                      <h3 class="cap-highlight" data-zh="当发行人、投资人及企业员工之间的关系被同时纳入视野，企业的资本结构才会呈现出完整形态。" data-en="Only when issuers, investors, and employees are considered together — the full capital structure emerges.">Only when <span class="cap-accent">issuers</span>, <span class="cap-accent">investors</span>, and <span class="cap-accent">employees</span> are considered together — the full capital structure emerges.</h3>
+                      <p class="cap-intro" data-zh="长期参与企业在不同资本阶段的事务之后，我们逐渐形成一个判断——" data-en="Through long-term involvement across different stages of the capital lifecycle, we have developed a clear perspective:">Through long-term involvement across different stages of the capital lifecycle, we have developed a clear perspective:</p>
+                      <h3 class="cap-highlight" data-zh="资本市场并不是单向关系。" data-en="The capital market is not a one-sided system.">The capital market is <em>not</em> a one-sided system.</h3>
+                      <p class="cap-body" data-zh="服务发行人，并不能完整理解市场。只站在投资人一侧，也无法看到企业内部的真实运转。企业在资本市场中的状态，往往由多方角色共同塑造。" data-en="Working only with issuers does not fully explain the market, just as viewing it solely from the investor side fails to reflect how companies actually operate. A company's position in the capital markets is shaped by multiple stakeholders.">Working only with issuers does not fully explain the market, just as viewing it solely from the investor side fails to reflect how companies actually operate. A company's position in the capital markets is shaped by <span class="cap-accent">multiple stakeholders</span>.</p>
+                      <h3 class="cap-highlight" data-zh="当发行人、投资人及企业员工之间的关系被同时纳入视野，企业的资本结构才会呈现出完整形态。" data-en="Only when issuers, investors, and employees are considered together does the full structure of a company's capital truly emerge.">Only when <span class="cap-accent">issuers</span>, <span class="cap-accent">investors</span>, and <span class="cap-accent">employees</span> are considered together does the full structure of a company's capital truly emerge.</h3>
                     </div>
                   </div>
                   <!-- Right: 3D glass Venn -->
@@ -2925,14 +3139,15 @@
                 </div>
 
                 <div class="cards-expertises">
-                  <div class="expertises-container" style="--cards-count: 3;">
+                  <div class="expertises-container" style="--cards-count: 7;">
 
-                    <!-- Card 0: 投资者关系与市场沟通 -->
-                    <div class="expertise-card" style="background-color: #FAF7F7; top:50px">
+                    <!-- Card 0-A: Financial Report.png -->
+                    <div class="expertise-card" style="background-color: #FAF7F7; top:50px;">
+                      <span style="position:absolute;top:1rem;right:1.5rem;background:#1a8a6e;color:#fff;padding:4px 14px;border-radius:20px;font-size:13px;font-weight:600;z-index:2;">1 — Financial Report.png</span>
                       <div class="card-flex">
                         <div class="card-left">
                           <h3 class="card-title" data-splitting="words" data-zh="投资者关系与市场沟通" data-en="Investor Relations & Market Communication">Investor Relations & Market Communication</h3>
-                          <p class="card-desc anim-fade" data-zh="我们帮助企业设计稳定、连续的资本信号输出体系，让市场持续理解企业价值。通过结构化的信息披露、定期的投资者互动和精准的市场沟通策略，建立长期信任。" data-en="We help companies design a stable, continuous capital signal output system so the market consistently understands enterprise value. Through structured disclosure, regular investor interactions, and precise communication strategies, we build long-term trust.">We help companies design a stable, continuous capital signal output system so the market consistently understands enterprise value. Through structured disclosure, regular investor interactions, and precise communication strategies, we build long-term trust.</p>
+                          <p class="card-desc anim-fade" data-zh="我们提供面向分发与算法环境的 IR / PR 服务，构建企业在资本市场中的统一表达与持续认知。围绕财报、公告与研究内容，通过结构化处理与多渠道分发，形成可检索、可验证的长期信息留痕，使企业被持续理解、反复触达投资人和AI。" data-en="We deliver IR / PR solutions for distribution-driven and algorithmic markets, shaping how companies are consistently understood in the capital markets. By structuring and distributing financial and research content, we create persistent, searchable information footprints — ensuring companies are continuously recognized by both investors and AI systems.">We deliver IR / PR solutions for distribution-driven and algorithmic markets, shaping how companies are consistently understood in the capital markets. By structuring and distributing financial and research content, we create persistent, searchable information footprints — ensuring companies are continuously recognized by both investors and AI systems.</p>
                           <a href="#contact" class="btn">
                             <div class="btn-label anim-clip-right"><span data-zh="了解更多" data-en="Learn More">Learn More</span></div>
                             <div class="button_circle anim-pop">
@@ -2940,23 +3155,24 @@
                             </div>
                           </a>
                           <ul class="card-tags">
-                            <li><span class="tag-icon anim-clip-left"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span><span class="tag-text anim-clip-left" data-zh="信息披露策略" data-en="Disclosure Strategy">Disclosure Strategy</span></li>
-                            <li><span class="tag-icon anim-clip-left"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="tag-text anim-clip-left" data-zh="投资者互动管理" data-en="Investor Engagement">Investor Engagement</span></li>
-                            <li><span class="tag-icon anim-clip-left"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span><span class="tag-text anim-clip-left" data-zh="市场信号设计" data-en="Market Signal Design">Market Signal Design</span></li>
+                            <li><span class="tag-icon anim-clip-left"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span><span class="tag-text anim-clip-left" data-zh="投资叙事与研究框架构建" data-en="Investment Narrative and Research Framework Design">Investment Narrative and Research Framework Design</span></li>
+                            <li><span class="tag-icon anim-clip-left"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="tag-text anim-clip-left" data-zh="券商研报合作与市场发布" data-en="Brokerage Research Collaboration and Market Publication">Brokerage Research Collaboration and Market Publication</span></li>
+                            <li><span class="tag-icon anim-clip-left"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span><span class="tag-text anim-clip-left" data-zh="多渠道分发与持续曝光管理" data-en="Distribution Systems and Ongoing Visibility Management">Distribution Systems and Ongoing Visibility Management</span></li>
                           </ul>
                         </div>
                         <div class="card-right">
-                          <div class="anim-fade"><svg width="200" height="200" viewBox="0 0 200 200" fill="none"><circle cx="100" cy="100" r="80" stroke="#1a8a6e" stroke-width="2" opacity="0.3"/><circle cx="100" cy="100" r="50" stroke="#1a8a6e" stroke-width="2" opacity="0.5"/><circle cx="100" cy="100" r="20" fill="#1a8a6e" opacity="0.2"/><path d="M60 140 L100 60 L140 140" stroke="#1a8a6e" stroke-width="3" fill="none"/></svg></div>
+                          <div class="anim-fade"><img src="Financial Report.png" alt="Financial Report" style="max-width:360px;max-height:360px;object-fit:contain;"></div>
                         </div>
                       </div>
                     </div>
 
-                    <!-- Card 1: 股权激励与交易执行 -->
-                    <div class="expertise-card" style="background-color: #FAF7F7; top:70px">
+                    <!-- Card 0-B: Buy.png -->
+                    <div class="expertise-card" style="background-color: #FAF7F7; top:50px;">
+                      <span style="position:absolute;top:1rem;right:1.5rem;background:#1a8a6e;color:#fff;padding:4px 14px;border-radius:20px;font-size:13px;font-weight:600;z-index:2;">2 — Buy.png</span>
                       <div class="card-flex">
                         <div class="card-left">
-                          <h3 class="card-title" data-splitting="words" data-zh="股权激励与交易执行" data-en="Equity Incentives & Trade Execution">Equity Incentives & Trade Execution</h3>
-                          <p class="card-desc anim-fade" data-zh="协调内部股权结构与外部资本认知的一致性，为企业提供从方案设计到落地执行的全流程服务。确保激励机制与公司战略、资本节奏同频。" data-en="Aligning internal equity structure with external capital perception, providing end-to-end services from scheme design to execution. Ensuring incentive mechanisms synchronize with company strategy and capital rhythm.">Aligning internal equity structure with external capital perception, providing end-to-end services from scheme design to execution. Ensuring incentive mechanisms synchronize with company strategy and capital rhythm.</p>
+                          <h3 class="card-title" data-splitting="words" data-zh="投资者关系与市场沟通" data-en="Investor Relations & Market Communication">Investor Relations & Market Communication</h3>
+                          <p class="card-desc anim-fade" data-zh="我们提供面向分发与算法环境的 IR / PR 服务，构建企业在资本市场中的统一表达与持续认知。围绕财报、公告与研究内容，通过结构化处理与多渠道分发，形成可检索、可验证的长期信息留痕，使企业被持续理解、反复触达投资人和AI。" data-en="We deliver IR / PR solutions for distribution-driven and algorithmic markets, shaping how companies are consistently understood in the capital markets. By structuring and distributing financial and research content, we create persistent, searchable information footprints — ensuring companies are continuously recognized by both investors and AI systems.">We deliver IR / PR solutions for distribution-driven and algorithmic markets, shaping how companies are consistently understood in the capital markets. By structuring and distributing financial and research content, we create persistent, searchable information footprints — ensuring companies are continuously recognized by both investors and AI systems.</p>
                           <a href="#contact" class="btn">
                             <div class="btn-label anim-clip-right"><span data-zh="了解更多" data-en="Learn More">Learn More</span></div>
                             <div class="button_circle anim-pop">
@@ -2964,9 +3180,108 @@
                             </div>
                           </a>
                           <ul class="card-tags">
-                            <li><span class="tag-icon anim-clip-left"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></span><span class="tag-text anim-clip-left" data-zh="股权方案设计" data-en="Equity Scheme Design">Equity Scheme Design</span></li>
-                            <li><span class="tag-icon anim-clip-left"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span><span class="tag-text anim-clip-left" data-zh="交易结构优化" data-en="Transaction Optimization">Transaction Optimization</span></li>
-                            <li><span class="tag-icon anim-clip-left"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span><span class="tag-text anim-clip-left" data-zh="合规执行管理" data-en="Compliance Management">Compliance Management</span></li>
+                            <li><span class="tag-icon anim-clip-left"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span><span class="tag-text anim-clip-left" data-zh="投资叙事与研究框架构建" data-en="Investment Narrative and Research Framework Design">Investment Narrative and Research Framework Design</span></li>
+                            <li><span class="tag-icon anim-clip-left"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="tag-text anim-clip-left" data-zh="券商研报合作与市场发布" data-en="Brokerage Research Collaboration and Market Publication">Brokerage Research Collaboration and Market Publication</span></li>
+                            <li><span class="tag-icon anim-clip-left"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span><span class="tag-text anim-clip-left" data-zh="多渠道分发与持续曝光管理" data-en="Distribution Systems and Ongoing Visibility Management">Distribution Systems and Ongoing Visibility Management</span></li>
+                          </ul>
+                        </div>
+                        <div class="card-right">
+                          <div class="anim-fade"><img src="Buy.png" alt="Buy" style="max-width:360px;max-height:360px;object-fit:contain;"></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Card 0-C: investment-08.png -->
+                    <div class="expertise-card" style="background-color: #FAF7F7; top:50px;">
+                      <span style="position:absolute;top:1rem;right:1.5rem;background:#1a8a6e;color:#fff;padding:4px 14px;border-radius:20px;font-size:13px;font-weight:600;z-index:2;">3 — investment-08.png</span>
+                      <div class="card-flex">
+                        <div class="card-left">
+                          <h3 class="card-title" data-splitting="words" data-zh="投资者关系与市场沟通" data-en="Investor Relations & Market Communication">Investor Relations & Market Communication</h3>
+                          <p class="card-desc anim-fade" data-zh="我们提供面向分发与算法环境的 IR / PR 服务，构建企业在资本市场中的统一表达与持续认知。围绕财报、公告与研究内容，通过结构化处理与多渠道分发，形成可检索、可验证的长期信息留痕，使企业被持续理解、反复触达投资人和AI。" data-en="We deliver IR / PR solutions for distribution-driven and algorithmic markets, shaping how companies are consistently understood in the capital markets. By structuring and distributing financial and research content, we create persistent, searchable information footprints — ensuring companies are continuously recognized by both investors and AI systems.">We deliver IR / PR solutions for distribution-driven and algorithmic markets, shaping how companies are consistently understood in the capital markets. By structuring and distributing financial and research content, we create persistent, searchable information footprints — ensuring companies are continuously recognized by both investors and AI systems.</p>
+                          <a href="#contact" class="btn">
+                            <div class="btn-label anim-clip-right"><span data-zh="了解更多" data-en="Learn More">Learn More</span></div>
+                            <div class="button_circle anim-pop">
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0d1f1a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                            </div>
+                          </a>
+                          <ul class="card-tags">
+                            <li><span class="tag-icon anim-clip-left"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span><span class="tag-text anim-clip-left" data-zh="投资叙事与研究框架构建" data-en="Investment Narrative and Research Framework Design">Investment Narrative and Research Framework Design</span></li>
+                            <li><span class="tag-icon anim-clip-left"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="tag-text anim-clip-left" data-zh="券商研报合作与市场发布" data-en="Brokerage Research Collaboration and Market Publication">Brokerage Research Collaboration and Market Publication</span></li>
+                            <li><span class="tag-icon anim-clip-left"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span><span class="tag-text anim-clip-left" data-zh="多渠道分发与持续曝光管理" data-en="Distribution Systems and Ongoing Visibility Management">Distribution Systems and Ongoing Visibility Management</span></li>
+                          </ul>
+                        </div>
+                        <div class="card-right">
+                          <div class="anim-fade"><img src="investment-08.png" alt="Investment" style="max-width:360px;max-height:360px;object-fit:contain;"></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Card 0-D: 7.svg -->
+                    <div class="expertise-card" style="background-color: #FAF7F7; top:50px;">
+                      <span style="position:absolute;top:1rem;right:1.5rem;background:#1a8a6e;color:#fff;padding:4px 14px;border-radius:20px;font-size:13px;font-weight:600;z-index:2;">4 — 7.svg</span>
+                      <div class="card-flex">
+                        <div class="card-left">
+                          <h3 class="card-title" data-splitting="words" data-zh="投资者关系与市场沟通" data-en="Investor Relations & Market Communication">Investor Relations & Market Communication</h3>
+                          <p class="card-desc anim-fade" data-zh="我们提供面向分发与算法环境的 IR / PR 服务，构建企业在资本市场中的统一表达与持续认知。围绕财报、公告与研究内容，通过结构化处理与多渠道分发，形成可检索、可验证的长期信息留痕，使企业被持续理解、反复触达投资人和AI。" data-en="We deliver IR / PR solutions for distribution-driven and algorithmic markets, shaping how companies are consistently understood in the capital markets. By structuring and distributing financial and research content, we create persistent, searchable information footprints — ensuring companies are continuously recognized by both investors and AI systems.">We deliver IR / PR solutions for distribution-driven and algorithmic markets, shaping how companies are consistently understood in the capital markets. By structuring and distributing financial and research content, we create persistent, searchable information footprints — ensuring companies are continuously recognized by both investors and AI systems.</p>
+                          <a href="#contact" class="btn">
+                            <div class="btn-label anim-clip-right"><span data-zh="了解更多" data-en="Learn More">Learn More</span></div>
+                            <div class="button_circle anim-pop">
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0d1f1a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                            </div>
+                          </a>
+                          <ul class="card-tags">
+                            <li><span class="tag-icon anim-clip-left"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span><span class="tag-text anim-clip-left" data-zh="投资叙事与研究框架构建" data-en="Investment Narrative and Research Framework Design">Investment Narrative and Research Framework Design</span></li>
+                            <li><span class="tag-icon anim-clip-left"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="tag-text anim-clip-left" data-zh="券商研报合作与市场发布" data-en="Brokerage Research Collaboration and Market Publication">Brokerage Research Collaboration and Market Publication</span></li>
+                            <li><span class="tag-icon anim-clip-left"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span><span class="tag-text anim-clip-left" data-zh="多渠道分发与持续曝光管理" data-en="Distribution Systems and Ongoing Visibility Management">Distribution Systems and Ongoing Visibility Management</span></li>
+                          </ul>
+                        </div>
+                        <div class="card-right">
+                          <div class="anim-fade"><object type="image/svg+xml" data="7.svg" width="360" height="360" style="max-width:360px;max-height:360px;object-fit:contain;">Icon 7</object></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Card 0-E: 002-stock market.svg -->
+                    <div class="expertise-card" style="background-color: #FAF7F7; top:50px;">
+                      <span style="position:absolute;top:1rem;right:1.5rem;background:#1a8a6e;color:#fff;padding:4px 14px;border-radius:20px;font-size:13px;font-weight:600;z-index:2;">5 — 002-stock market.svg</span>
+                      <div class="card-flex">
+                        <div class="card-left">
+                          <h3 class="card-title" data-splitting="words" data-zh="投资者关系与市场沟通" data-en="Investor Relations & Market Communication">Investor Relations & Market Communication</h3>
+                          <p class="card-desc anim-fade" data-zh="我们提供面向分发与算法环境的 IR / PR 服务，构建企业在资本市场中的统一表达与持续认知。围绕财报、公告与研究内容，通过结构化处理与多渠道分发，形成可检索、可验证的长期信息留痕，使企业被持续理解、反复触达投资人和AI。" data-en="We deliver IR / PR solutions for distribution-driven and algorithmic markets, shaping how companies are consistently understood in the capital markets. By structuring and distributing financial and research content, we create persistent, searchable information footprints — ensuring companies are continuously recognized by both investors and AI systems.">We deliver IR / PR solutions for distribution-driven and algorithmic markets, shaping how companies are consistently understood in the capital markets. By structuring and distributing financial and research content, we create persistent, searchable information footprints — ensuring companies are continuously recognized by both investors and AI systems.</p>
+                          <a href="#contact" class="btn">
+                            <div class="btn-label anim-clip-right"><span data-zh="了解更多" data-en="Learn More">Learn More</span></div>
+                            <div class="button_circle anim-pop">
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0d1f1a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                            </div>
+                          </a>
+                          <ul class="card-tags">
+                            <li><span class="tag-icon anim-clip-left"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span><span class="tag-text anim-clip-left" data-zh="投资叙事与研究框架构建" data-en="Investment Narrative and Research Framework Design">Investment Narrative and Research Framework Design</span></li>
+                            <li><span class="tag-icon anim-clip-left"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="tag-text anim-clip-left" data-zh="券商研报合作与市场发布" data-en="Brokerage Research Collaboration and Market Publication">Brokerage Research Collaboration and Market Publication</span></li>
+                            <li><span class="tag-icon anim-clip-left"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span><span class="tag-text anim-clip-left" data-zh="多渠道分发与持续曝光管理" data-en="Distribution Systems and Ongoing Visibility Management">Distribution Systems and Ongoing Visibility Management</span></li>
+                          </ul>
+                        </div>
+                        <div class="card-right">
+                          <div class="anim-fade"><img src="002-stock market.svg" alt="Stock Market" style="max-width:360px;max-height:360px;object-fit:contain;"></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Card 1: 股权激励与执行体系 -->
+                    <div class="expertise-card" style="background-color: #FAF7F7; top:70px">
+                      <div class="card-flex">
+                        <div class="card-left">
+                          <h3 class="card-title" data-splitting="words" data-zh="股权激励与执行体系" data-en="Equity Incentive and Execution Framework">Equity Incentive and Execution Framework</h3>
+                          <p class="card-desc anim-fade" data-zh="我们提供面向全球资本市场的 ESOP 服务，将激励设计、系统管理与交易执行整合为统一体系。通过标准化的管理系统与合规流程，支持企业完成员工账户开立、行权交易及资金结算，并协调跨境监管与税务要求，确保激励机制与资本市场运作的长期一致性。" data-en="We deliver ESOP solutions for global capital markets, integrating incentive design, system management, and execution into a unified structure.">We deliver ESOP solutions for global capital markets, integrating incentive design, system management, and execution into a unified structure.</p>
+                          <a href="#contact" class="btn">
+                            <div class="btn-label anim-clip-right"><span data-zh="了解更多" data-en="Learn More">Learn More</span></div>
+                            <div class="button_circle anim-pop">
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0d1f1a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                            </div>
+                          </a>
+                          <ul class="card-tags">
+                            <li><span class="tag-icon anim-clip-left"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></span><span class="tag-text anim-clip-left" data-zh="SAAS系统与数据管理" data-en="SaaS Setup and Management">SaaS Setup and Management</span></li>
+                            <li><span class="tag-icon anim-clip-left"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span><span class="tag-text anim-clip-left" data-zh="行权与结算支持" data-en="Exercise and Settlement Execution">Exercise and Settlement Execution</span></li>
+                            <li><span class="tag-icon anim-clip-left"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span><span class="tag-text anim-clip-left" data-zh="跨境合规与税务协同" data-en="Cross-border Compliance & Tax Coordination">Cross-border Compliance & Tax Coordination</span></li>
                           </ul>
                         </div>
                         <div class="card-right">
@@ -2975,12 +3290,12 @@
                       </div>
                     </div>
 
-                    <!-- Card 2: 跨境上市与资本整合 -->
+                    <!-- Card 2: 跨境上市与资本路径规划 -->
                     <div class="expertise-card" style="background-color: #FAF7F7; top:90px">
                       <div class="card-flex">
                         <div class="card-left">
-                          <h3 class="card-title" data-splitting="words" data-zh="跨境上市与资本整合" data-en="Cross-border Listing & Capital Integration">Cross-border Listing & Capital Integration</h3>
-                          <p class="card-desc anim-fade" data-zh="规划企业在不同市场阶段的资本路径安排，覆盖从Pre-IPO到上市后的完整生命周期。整合新加坡、香港、美国等多市场资源，打通跨境资本通道。" data-en="Planning the company's capital path across different market stages, covering the full lifecycle from Pre-IPO to post-listing. Integrating multi-market resources across Singapore, Hong Kong, and the US to open cross-border capital channels.">Planning the company's capital path across different market stages, covering the full lifecycle from Pre-IPO to post-listing. Integrating multi-market resources across Singapore, Hong Kong, and the US to open cross-border capital channels.</p>
+                          <h3 class="card-title" data-splitting="words" data-zh="跨境上市与资本路径规划" data-en="Global Capital Pathways and Listing Strategy">Global Capital Pathways and Listing Strategy</h3>
+                          <p class="card-desc anim-fade" data-zh="我们协助企业规划跨境资本路径，从上市地点选择到资本结构安排，构建面向不同市场的统一资本逻辑。结合监管环境与投资者预期，在上市前后统筹融资、并购与结构调整，确保企业在不同阶段实现长期一致的资本运作。" data-en="We design cross-border capital pathways for companies, from listing venue selection to capital structure planning, establishing a unified capital logic across markets. By aligning regulatory frameworks with investor expectations, we orchestrate financing, M&amp;A, and structural adjustments across pre- and post-listing stages, ensuring long-term consistency in capital operations.">We design cross-border capital pathways for companies, from listing venue selection to capital structure planning, establishing a unified capital logic across markets. By aligning regulatory frameworks with investor expectations, we orchestrate financing, M&amp;A, and structural adjustments across pre- and post-listing stages, ensuring long-term consistency in capital operations.</p>
                           <a href="#contact" class="btn">
                             <div class="btn-label anim-clip-right"><span data-zh="了解更多" data-en="Learn More">Learn More</span></div>
                             <div class="button_circle anim-pop">
@@ -2988,9 +3303,9 @@
                             </div>
                           </a>
                           <ul class="card-tags">
-                            <li><span class="tag-icon anim-clip-left"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span><span class="tag-text anim-clip-left" data-zh="上市路径规划" data-en="IPO Path Planning">IPO Path Planning</span></li>
-                            <li><span class="tag-icon anim-clip-left"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span><span class="tag-text anim-clip-left" data-zh="跨境资本架构" data-en="Cross-border Structure">Cross-border Structure</span></li>
-                            <li><span class="tag-icon anim-clip-left"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span><span class="tag-text anim-clip-left" data-zh="多市场资源整合" data-en="Multi-market Integration">Multi-market Integration</span></li>
+                            <li><span class="tag-icon anim-clip-left"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span><span class="tag-text anim-clip-left" data-zh="跨境并购与整合执行" data-en="Cross-border M&amp;A and Integration Execution">Cross-border M&amp;A and Integration Execution</span></li>
+                            <li><span class="tag-icon anim-clip-left"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span><span class="tag-text anim-clip-left" data-zh="资本路径设计与结构规划" data-en="Financing Strategy and Capital Planning">Financing Strategy and Capital Planning</span></li>
+                            <li><span class="tag-icon anim-clip-left"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span><span class="tag-text anim-clip-left" data-zh="上市团队协调人" data-en="IPO Process Coordination">IPO Process Coordination</span></li>
                           </ul>
                         </div>
                         <div class="card-right">
@@ -3006,52 +3321,6 @@
           </section>
 
           </div><!-- /card-stack-wrapper -->
-
-          <!-- Team / Testimonials Section -->
-          <section class="teams-section">
-            <div class="teams-container">
-
-              <div class="testimonial testimonial-francine" style="background-color:#1a8a6e;">
-                <p class="quote-text" data-zh=""ONE SHARE 帮助我们建立了清晰的投资者沟通渠道，市场认知度显著提升。"" data-en=""ONE SHARE helped us build clear investor communication channels, significantly improving market recognition.""></p>
-                <p class="quote-name" data-zh="— 某上市公司 CFO" data-en="— CFO, Listed Company">— CFO, Listed Company</p>
-              </div>
-
-              <div class="testimonial testimonial-myriam" style="background-color:#1a8a6e;">
-                <p class="quote-text" data-zh=""他们对资本市场的深度理解，让我们的跨境上市过程非常顺畅。"" data-en=""Their deep understanding of capital markets made our cross-border listing process exceptionally smooth.""></p>
-                <p class="quote-name" data-zh="— 某科技企业创始人" data-en="— Founder, Tech Company">— Founder, Tech Company</p>
-              </div>
-
-              <div class="testimonial testimonial-souleymane" style="background-color:#157a5f;">
-                <p class="quote-text" data-zh=""专业、高效、值得信赖的资本市场合作伙伴。"" data-en=""Professional, efficient, and trustworthy capital market partners.""></p>
-                <p class="quote-name" data-zh="— 某基金管理人" data-en="— Fund Manager">— Fund Manager</p>
-              </div>
-
-              <a class="team-cta" href="#contact">
-                <div class="team-cta-inner">
-                  <h3 class="team-cta-title scroll-reveal" data-zh="与我们对话" data-en="Talk to Us">Talk to Us</h3>
-                  <div class="team-circle">
-                    <div class="circle-pic" style="background:#1a8a6e;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:16px;">O</div>
-                    <div class="circle-pic" style="background:#14705a;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:16px;">N</div>
-                    <div class="circle-pic" style="background:#157a5f;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:16px;">E</div>
-                    <div class="circle-pic circle-plus" style="background:#fff;display:flex;align-items:center;justify-content:center;">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0d1f1a" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                    </div>
-                  </div>
-                </div>
-              </a>
-
-              <div class="testimonial testimonial-maud" style="background-color:#1a8a6e;">
-                <p class="quote-text" data-zh=""ONE SHARE 的股权激励方案设计精准，团队执行力很强。"" data-en=""ONE SHARE's equity incentive scheme design is precise, and the team's execution is outstanding.""></p>
-                <p class="quote-name" data-zh="— 某新经济公司 CEO" data-en="— CEO, New Economy Company">— CEO, New Economy Company</p>
-              </div>
-
-              <div class="testimonial testimonial-nicolas" style="background-color:#157a5f;">
-                <p class="quote-text" data-zh=""在资本路径设计方面，他们的视野和经验令人印象深刻。"" data-en=""Their vision and experience in capital path design is truly impressive.""></p>
-                <p class="quote-name" data-zh="— 某投资机构合伙人" data-en="— Partner, Investment Firm">— Partner, Investment Firm</p>
-              </div>
-
-            </div>
-          </section>
 
           <!-- Perspectives Section -->
           <section class="perspectives-section" id="insights">
@@ -3087,9 +3356,9 @@
                       </div>
                       <div class="article-card-content">
                         <div class="article-tags">
-                          <span class="article-tag" data-zh="资本市场" data-en="Capital Markets">Capital Markets</span>
+                          <span class="article-tag" data-zh="市场活动与路演" data-en="Market Events & Roadshows">Market Events &amp; Roadshows</span>
                         </div>
-                        <h3 class="article-title" data-zh="信息贬值时代：企业如何建立结构化资本叙事" data-en="The Age of Information Depreciation: How Companies Build Structured Capital Narratives">The Age of Information Depreciation: How Companies Build Structured Capital Narratives</h3>
+                        <h3 class="article-title" data-zh="组织与参与资本市场活动与投资者会议，建立持续的市场沟通与触达机制。" data-en="Organize and participate in market events and investor meetings, building ongoing engagement with the capital markets.">Organize and participate in market events and investor meetings, building ongoing engagement with the capital markets.</h3>
                       </div>
                     </div>
                   </a>
@@ -3105,9 +3374,9 @@
                       </div>
                       <div class="article-card-content">
                         <div class="article-tags">
-                          <span class="article-tag" data-zh="投资者关系" data-en="Investor Relations">Investor Relations</span>
+                          <span class="article-tag" data-zh="研究与报告支持" data-en="Research & Reporting">Research &amp; Reporting</span>
                         </div>
-                        <h3 class="article-title" data-zh="从增长叙事到结构可验证性：资本市场的范式转移" data-en="From Growth Narratives to Structural Verifiability: A Capital Market Paradigm Shift">From Growth Narratives to Structural Verifiability: A Capital Market Paradigm Shift</h3>
+                        <h3 class="article-title" data-zh="联合券商与研究机构开展研究支持，提升企业市场认知与表达质量。" data-en="Collaborate with brokers and research institutions, enhancing market visibility and communication quality.">Collaborate with brokers and research institutions, enhancing market visibility and communication quality.</h3>
                       </div>
                     </div>
                   </a>
@@ -3123,9 +3392,9 @@
                       </div>
                       <div class="article-card-content">
                         <div class="article-tags">
-                          <span class="article-tag" data-zh="股权激励" data-en="Equity Incentives">Equity Incentives</span>
+                          <span class="article-tag" data-zh="媒体访谈与市场观点" data-en="Media & Market Insights">Media &amp; Market Insights</span>
                         </div>
-                        <h3 class="article-title" data-zh="股权激励设计的三个关键维度" data-en="Three Key Dimensions of Equity Incentive Design">Three Key Dimensions of Equity Incentive Design</h3>
+                        <h3 class="article-title" data-zh="参与媒体访谈与专题内容输出，持续传递公司与市场观点。" data-en="Engage in media interviews and feature content, delivering consistent market perspectives.">Engage in media interviews and feature content, delivering consistent market perspectives.</h3>
                       </div>
                     </div>
                   </a>
@@ -3141,10 +3410,9 @@
                       </div>
                       <div class="article-card-content">
                         <div class="article-tags">
-                          <span class="article-tag" data-zh="跨境上市" data-en="Cross-border Listing">Cross-border Listing</span>
-                          <span class="article-tag" data-zh="新加坡" data-en="Singapore">Singapore</span>
+                          <span class="article-tag" data-zh="市场成果与内容输出" data-en="Market Outputs & Content Track Record">Market Outputs &amp; Content Track Record</span>
                         </div>
-                        <h3 class="article-title" data-zh="新加坡作为亚洲资本枢纽的战略价值" data-en="Singapore's Strategic Value as Asia's Capital Hub">Singapore's Strategic Value as Asia's Capital Hub</h3>
+                        <h3 class="article-title" data-zh="呈现企业在资本市场中的研究、活动与内容成果，构建持续可见、可验证的市场存在。" data-en="Present research, events, and content outputs in the capital markets, building a persistent and verifiable market presence.">Present research, events, and content outputs in the capital markets, building a persistent and verifiable market presence.</h3>
                       </div>
                     </div>
                   </a>
@@ -3168,177 +3436,6 @@
                   </a>
                 </div>
 
-              </div>
-            </div>
-          </section>
-
-          <!-- Méthodologie Section -->
-          <section class="methodologie-section">
-            <div class="methodologie-container">
-              <div class="methodologie-flex">
-                <div class="methodologie-left">
-                  <div class="methodologie-left-inner">
-                    <h2 class="methodologie-heading scroll-reveal" data-splitting="words" data-zh="从诊断到持续，系统化的资本路径设计。" data-en="From diagnosis to sustainability — systematic capital path design.">From diagnosis to sustainability — systematic capital path design.</h2>
-                    <div style="padding:1rem 0;">
-                      <p class="methodologie-desc" data-zh="理解企业现状，对齐资本愿景，设计并执行可验证的价值路径。" data-en="Understanding the current state, aligning capital vision, designing and executing a verifiable value path.">Understanding the current state, aligning capital vision, designing and executing a verifiable value path.</p>
-                      <a href="#contact" class="btn" title="了解我们的方法">
-                        <div class="btn-label anim-clip-right"><span data-zh="了解我们的方法" data-en="Our Approach">Our Approach</span></div>
-                        <div class="button_circle anim-pop">
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0d1f1a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-                        </div>
-                      </a>
-                    </div>
-
-                    <ul class="accordion-list">
-                      <li class="accordion-item">
-                        <span class="accordion-icon anim-clip-left">
-                          <svg class="anim-fade" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                        </span>
-                        <div class="accordion-content anim-clip-left">
-                          <div class="accordion-header" data-accordion-toggle>
-                            <h3 data-zh="诊断与评估" data-en="Diagnosis & Assessment">Diagnosis & Assessment</h3>
-                            <span class="accordion-chevron">
-                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-                            </span>
-                          </div>
-                          <div class="accordion-body">
-                            <p data-zh="深度分析企业资本结构现状，识别核心问题与潜在机会，建立清晰的诊断基线。" data-en="In-depth analysis of the company's capital structure, identifying core issues and potential opportunities to establish a clear diagnostic baseline.">In-depth analysis of the company's capital structure, identifying core issues and potential opportunities to establish a clear diagnostic baseline.</p>
-                          </div>
-                        </div>
-                      </li>
-                      <li class="accordion-item">
-                        <span class="accordion-icon anim-clip-left">
-                          <svg class="anim-fade" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
-                        </span>
-                        <div class="accordion-content anim-clip-left">
-                          <div class="accordion-header" data-accordion-toggle>
-                            <h3 data-zh="策略与设计" data-en="Strategy & Design">Strategy & Design</h3>
-                            <span class="accordion-chevron">
-                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-                            </span>
-                          </div>
-                          <div class="accordion-body">
-                            <p data-zh="制定与企业发展阶段匹配的资本路径方案和市场沟通策略，确保资本叙事的连贯性。" data-en="Developing capital path plans and market communication strategies aligned with the company's development stage, ensuring narrative coherence.">Developing capital path plans and market communication strategies aligned with the company's development stage, ensuring narrative coherence.</p>
-                          </div>
-                        </div>
-                      </li>
-                      <li class="accordion-item">
-                        <span class="accordion-icon anim-clip-left">
-                          <svg class="anim-fade" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                        </span>
-                        <div class="accordion-content anim-clip-left">
-                          <div class="accordion-header" data-accordion-toggle>
-                            <h3 data-zh="执行与落地" data-en="Execution & Implementation">Execution & Implementation</h3>
-                            <span class="accordion-chevron">
-                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-                            </span>
-                          </div>
-                          <div class="accordion-body">
-                            <p data-zh="从信息披露到交易执行，全流程专业团队协同推进，确保每一步都精准到位。" data-en="From disclosure to trade execution, our professional team coordinates the entire process, ensuring every step is precise.">From disclosure to trade execution, our professional team coordinates the entire process, ensuring every step is precise.</p>
-                          </div>
-                        </div>
-                      </li>
-                      <li class="accordion-item">
-                        <span class="accordion-icon anim-clip-left">
-                          <svg class="anim-fade" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
-                        </span>
-                        <div class="accordion-content anim-clip-left">
-                          <div class="accordion-header" data-accordion-toggle>
-                            <h3 data-zh="持续与迭代" data-en="Continuity & Iteration">Continuity & Iteration</h3>
-                            <span class="accordion-chevron">
-                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-                            </span>
-                          </div>
-                          <div class="accordion-body">
-                            <p data-zh="建立长期资本信号管理机制，持续优化市场认知，确保企业价值被持续理解。" data-en="Establishing long-term capital signal management mechanisms, continuously optimizing market perception, ensuring sustained understanding of enterprise value.">Establishing long-term capital signal management mechanisms, continuously optimizing market perception, ensuring sustained understanding of enterprise value.</p>
-                          </div>
-                        </div>
-                      </li>
-                    </ul>
-                  </div>
-
-                  <div class="methodologie-small-image anim-image-wrap">
-                    <div class="anim-image-overlay"></div>
-                    <div class="anim-image-inner">
-                      <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=600&q=80" alt="Team Collaboration">
-                    </div>
-                  </div>
-                </div>
-
-                <div class="methodologie-right">
-                  <div class="methodologie-image anim-image-wrap">
-                    <div class="anim-image-overlay"></div>
-                    <div class="anim-image-inner">
-                      <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80" alt="Financial District">
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <!-- Formations Section -->
-          <section class="formations-section">
-            <div class="formations-container">
-              <div class="formations-flex">
-                <div class="formations-left">
-                  <div class="formations-left-inner">
-                    <h2 class="formations-heading scroll-reveal" data-splitting="words" data-zh="选择 ONE SHARE，构建持续的资本存在方式。" data-en="Choose ONE SHARE — build a lasting capital presence.">Choose ONE SHARE — build a lasting capital presence.</h2>
-                    <div style="padding:1rem 0;">
-                      <p class="formations-desc" data-zh="我们不只是服务提供者，更是企业资本路径的长期伙伴。" data-en="We are not just service providers — we are long-term partners on your capital journey.">We are not just service providers — we are long-term partners on your capital journey.</p>
-                      <a href="#contact" class="btn" title="预约沟通">
-                        <div class="btn-label anim-clip-right"><span data-zh="预约沟通" data-en="Schedule a Call">Schedule a Call</span></div>
-                        <div class="button_circle anim-pop">
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0d1f1a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-                        </div>
-                      </a>
-                    </div>
-                  </div>
-                </div>
-                <div class="formations-right">
-                  <div class="formations-right-inner">
-                    <a href="javascript:void(0)" class="formation-pill anim-clip-left">
-                      <div class="formation-pill-inner pill-wide">
-                        <div class="formation-pill-flex">
-                          <p class="formation-pill-text" data-zh="立足新加坡，辐射亚太资本市场" data-en="Based in Singapore, serving Asia-Pacific capital markets">Based in Singapore, serving Asia-Pacific capital markets</p>
-                          <div class="formation-pill-icon">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0d1f1a" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                          </div>
-                        </div>
-                      </div>
-                    </a>
-                    <a href="javascript:void(0)" class="formation-pill anim-clip-left">
-                      <div class="formation-pill-inner pill-narrow">
-                        <div class="formation-pill-flex">
-                          <p class="formation-pill-text" data-zh="跨境上市全流程服务经验" data-en="Full-cycle cross-border listing experience">Full-cycle cross-border listing experience</p>
-                          <div class="formation-pill-icon">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0d1f1a" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                          </div>
-                        </div>
-                      </div>
-                    </a>
-                    <a href="javascript:void(0)" class="formation-pill anim-clip-left">
-                      <div class="formation-pill-inner pill-wide">
-                        <div class="formation-pill-flex">
-                          <p class="formation-pill-text" data-zh="深度资本市场行业洞察" data-en="Deep capital market industry insights">Deep capital market industry insights</p>
-                          <div class="formation-pill-icon">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0d1f1a" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                          </div>
-                        </div>
-                      </div>
-                    </a>
-                    <a href="javascript:void(0)" class="formation-pill anim-clip-left">
-                      <div class="formation-pill-inner pill-narrow">
-                        <div class="formation-pill-flex">
-                          <p class="formation-pill-text" data-zh="结构化的投资者关系管理体系" data-en="Structured investor relations management system">Structured investor relations management system</p>
-                          <div class="formation-pill-icon">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0d1f1a" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                          </div>
-                        </div>
-                      </div>
-                    </a>
-                  </div>
-                </div>
               </div>
             </div>
           </section>
@@ -3377,21 +3474,21 @@
                     <form onsubmit="event.preventDefault();this.querySelector('.contact-fields').style.display='none';this.querySelector('.contact-success').style.display='flex';">
                       <div class="contact-fields">
                         <div style="display:flex;gap:1rem;margin-bottom:1.25rem;flex-wrap:wrap;">
-                          <div style="flex:1;min-width:180px;">
+                          <div style="flex:1;min-width:0;">
                             <label style="display:block;font-size:13px;margin-bottom:8px;font-weight:500;color:rgba(255,255,255,0.6);letter-spacing:0.5px;text-transform:uppercase;" data-zh="姓名 *" data-en="NAME *">NAME *</label>
                             <input type="text" required style="width:100%;padding:14px 18px;border:1px solid rgba(255,255,255,0.12);border-radius:12px;font-size:15px;font-family:'poppins',sans-serif;outline:none;background:rgba(255,255,255,0.06);color:#fff;transition:all 0.3s;" onfocus="this.style.borderColor='#1a8a6e';this.style.background='rgba(26,138,110,0.08)'" onblur="this.style.borderColor='rgba(255,255,255,0.12)';this.style.background='rgba(255,255,255,0.06)'">
                           </div>
-                          <div style="flex:1;min-width:180px;">
+                          <div style="flex:1;min-width:0;">
                             <label style="display:block;font-size:13px;margin-bottom:8px;font-weight:500;color:rgba(255,255,255,0.6);letter-spacing:0.5px;text-transform:uppercase;" data-zh="公司" data-en="COMPANY">COMPANY</label>
                             <input type="text" style="width:100%;padding:14px 18px;border:1px solid rgba(255,255,255,0.12);border-radius:12px;font-size:15px;font-family:'poppins',sans-serif;outline:none;background:rgba(255,255,255,0.06);color:#fff;transition:all 0.3s;" onfocus="this.style.borderColor='#1a8a6e';this.style.background='rgba(26,138,110,0.08)'" onblur="this.style.borderColor='rgba(255,255,255,0.12)';this.style.background='rgba(255,255,255,0.06)'">
                           </div>
                         </div>
                         <div style="display:flex;gap:1rem;margin-bottom:1.25rem;flex-wrap:wrap;">
-                          <div style="flex:1;min-width:180px;">
+                          <div style="flex:1;min-width:0;">
                             <label style="display:block;font-size:13px;margin-bottom:8px;font-weight:500;color:rgba(255,255,255,0.6);letter-spacing:0.5px;text-transform:uppercase;" data-zh="邮箱 *" data-en="EMAIL *">EMAIL *</label>
                             <input type="email" required style="width:100%;padding:14px 18px;border:1px solid rgba(255,255,255,0.12);border-radius:12px;font-size:15px;font-family:'poppins',sans-serif;outline:none;background:rgba(255,255,255,0.06);color:#fff;transition:all 0.3s;" onfocus="this.style.borderColor='#1a8a6e';this.style.background='rgba(26,138,110,0.08)'" onblur="this.style.borderColor='rgba(255,255,255,0.12)';this.style.background='rgba(255,255,255,0.06)'">
                           </div>
-                          <div style="flex:1;min-width:180px;">
+                          <div style="flex:1;min-width:0;">
                             <label style="display:block;font-size:13px;margin-bottom:8px;font-weight:500;color:rgba(255,255,255,0.6);letter-spacing:0.5px;text-transform:uppercase;" data-zh="电话" data-en="PHONE">PHONE</label>
                             <input type="tel" style="width:100%;padding:14px 18px;border:1px solid rgba(255,255,255,0.12);border-radius:12px;font-size:15px;font-family:'poppins',sans-serif;outline:none;background:rgba(255,255,255,0.06);color:#fff;transition:all 0.3s;" onfocus="this.style.borderColor='#1a8a6e';this.style.background='rgba(26,138,110,0.08)'" onblur="this.style.borderColor='rgba(255,255,255,0.12)';this.style.background='rgba(255,255,255,0.06)'">
                           </div>
@@ -3428,44 +3525,35 @@
           <!-- Site Footer -->
           <footer class="site-footer">
             <div class="footer-nav">
-              <div class="footer-logo">
-                <a href="#hero">
-                  <img src="oneshare.png" alt="ONE SHARE" style="filter:brightness(10);width:200px;min-width:200px;" />
-                </a>
+              <!-- Column 1: Brand -->
+              <div class="footer-col-brand">
+                <div class="footer-company-name" data-zh="ONE SHARE (SINGAPORE) PTE. LTD." data-en="ONE SHARE (SINGAPORE) PTE. LTD.">ONE SHARE (SINGAPORE) PTE. LTD.</div>
+                <p class="footer-tagline" data-zh="综合资本市场服务公司" data-en="Integrated Capital Market Services">Integrated Capital Market Services</p>
+                <p class="footer-tagline" style="margin-top:0.25rem;" data-zh="立足新加坡，服务亚洲上市与成长型企业。" data-en="Based in Singapore, serving Asia's listed and growth-stage enterprises.">Based in Singapore, serving Asia's listed and growth-stage enterprises.</p>
               </div>
-              <div class="footer-links-wrap">
-                <ul class="footer-links">
-                  <li><a href="#services" data-zh="投资者关系" data-en="Investor Relations">Investor Relations</a></li>
-                  <li><a href="#services" data-zh="股权激励" data-en="Equity Incentives">Equity Incentives</a></li>
-                  <li><a href="#services" data-zh="跨境上市" data-en="Cross-border Listing">Cross-border Listing</a></li>
-                  <li><a href="#insights" data-zh="新闻与洞察" data-en="News & Insights">News & Insights</a></li>
-                  <li><a href="#contact" data-zh="联系我们" data-en="Contact Us">Contact Us</a></li>
-                </ul>
+              <!-- Column 2: Contact -->
+              <div class="footer-col-contact">
+                <div class="footer-col-contact-title" data-zh="联系" data-en="Contact">Contact</div>
+                <p>Email: <a href="mailto:contact@oneshare.sg">contact@oneshare.sg</a></p>
+                <p style="margin-top:1rem;">Marina One East Tower #5<br>7 Straits View, Singapore 018936</p>
               </div>
-              <div class="footer-social">
+              <!-- Column 3: Social -->
+              <div class="footer-col-social">
                 <ul>
-                  <!-- InvestSG -->
-                  <li><a target="_blank" href="https://www.investsg.asia/" title="InvestSG"><img src="investsg.png" alt="InvestSG" style="width:25px;height:25px;object-fit:contain;border-radius:4px;background:#fff;padding:2px;"></a></li>
-                  <!-- Moomoo -->
-                  <li><a target="_blank" href="#" title="Moomoo"><img src="Moomoo.png" alt="Moomoo" style="width:25px;height:25px;object-fit:contain;border-radius:4px;"></a></li>
-                  <!-- Tiger Brokers -->
-                  <li><a target="_blank" href="#" title="Tiger Brokers"><img src="tiger.png" alt="Tiger Brokers" style="width:25px;height:25px;object-fit:contain;border-radius:4px;filter:invert(1);"></a></li>
                   <!-- LinkedIn -->
-                  <li><a target="_blank" href="https://www.linkedin.com/company/oneshare-singapore/" title="LinkedIn"><svg width="25" height="25" viewBox="0 0 24 24" fill="#fff"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a></li>
-                  <!-- Instagram -->
-                  <li><a target="_blank" href="https://www.instagram.com/oneshare.sg/" title="Instagram"><svg width="25" height="25" viewBox="0 0 24 24" fill="#fff"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C16.67.014 16.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></a></li>
+                  <li><a target="_blank" href="https://www.linkedin.com/company/oneshare-singapore-pte-ltd/" title="LinkedIn"><svg width="28" height="28" viewBox="0 0 24 24" fill="#fff"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a></li>
                   <!-- YouTube -->
-                  <li><a target="_blank" href="#" title="YouTube"><svg width="25" height="25" viewBox="0 0 24 24" fill="#fff"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a></li>
+                  <li><a target="_blank" href="https://www.youtube.com/@OneShareSG" title="YouTube"><svg width="28" height="28" viewBox="0 0 24 24" fill="#fff"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a></li>
+                  <!-- Instagram -->
+                  <li><a target="_blank" href="https://www.instagram.com/sgvresearch?igsh=b2RpaDJkcGs1cXJ2&utm_source=qr" title="Instagram"><svg width="28" height="28" viewBox="0 0 24 24" fill="#fff"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C16.67.014 16.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></a></li>
+                  <!-- InvestSG -->
+                  <li><a target="_blank" href="https://www.investsg.asia/users/sg_visual_research#/all" title="InvestSG"><img src="investsg.png" alt="InvestSG" style="border-radius:4px;background:#fff;padding:2px;"></a></li>
                 </ul>
               </div>
             </div>
+            <hr class="footer-divider">
             <div class="footer-bottom">
-              <div class="footer-bottom-left">
-                <span style="color:#898c8a;font-size:0.75rem;">Marina One East Tower #5, 7 Straits View, Singapore 018936</span>
-              </div>
-              <div class="footer-bottom-right">
-                <span>© 2026 ONE SHARE (SINGAPORE) PTE. LTD. All rights reserved.</span>
-              </div>
+              <span>© 2026 ONE SHARE. All rights reserved. <a href="#">Privacy Policy</a> | <a href="#">Cookie</a></span>
             </div>
           </footer>
 
@@ -3474,8 +3562,6 @@
     </main>
   </div>
 
-  <!-- ============ Three.js (from their bundle includes THREE) ============ -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
   <script>
     // ---- Preloader (Bloomberg Terminal) ----
@@ -3683,221 +3769,8 @@
       }, { passive: true });
     })();
 
-    // ---- WebGL Aurora + Particles (replicated from their source) ----
-    (function() {
-      var canvas = document.getElementById('webgl');
-      if (!canvas) return;
 
-      // 1. SETUP
-      var renderer = new THREE.WebGLRenderer({
-        canvas: canvas,
-        antialias: true,
-        alpha: true
-      });
-      renderer.setPixelRatio(2);
-      renderer.setSize(innerWidth, innerHeight);
-
-      var scene = new THREE.Scene();
-      var camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-
-      // 2. UNIFORMS
-      var uniforms = {
-        uResolution: { value: new THREE.Vector2(innerWidth, innerHeight) },
-        uTime:       { value: 0.0 },
-        uAspect:     { value: innerWidth / innerHeight },
-        uIsMobile:   { value: innerWidth < 1024 ? 1.0 : 0.0 },
-        uIsLarge:    { value: innerWidth > 1900 ? 1.0 : 0.0 }
-      };
-
-      // 3. SHARED GLSL
-      var sharedGLSL = `
-        vec3 permute(vec3 x){ return mod(((x*34.)+1.)*x,289.); }
-        float snoise(vec2 v){
-          const vec4 C = vec4(.2113,.3660,.5773,.02439);
-          vec2 i = floor(v + dot(v,C.yy));
-          vec2 x0= v - i + dot(i,C.xx);
-          vec2 i1= step(x0.yx,x0.xy);
-          vec4 x12 = x0.xyxy + C.xxzz; x12.xy -= i1;
-          i = mod(i,289.);
-          vec3 p = permute( permute(i.y+vec3(0.,i1.y,1.)) + i.x+vec3(0.,i1.x,1.) );
-          vec3 m = max(.5 - vec3(dot(x0,x0),dot(x12.xy,x12.xy),dot(x12.zw,x12.zw)),0.);
-          m = m*m*m;
-          vec3 x = 2.*fract(p*C.www)-1., h=abs(x)-.5, ox=floor(x+.5); x-=ox;
-          m *= 1.7928 - .8537*(x*x + h*h);
-          return dot(m, vec3(
-            dot(vec2(x.x,h.x),x0),
-            dot(vec2(x.y,h.y),x12.xy),
-            dot(vec2(x.z,h.z),x12.zw)
-          ));
-        }
-
-        float flicker(float s,float t){
-          return fract(sin(s*12.9898 + t*5.0)*43758.5453);
-        }
-
-        float auroraMask(vec2 uv, float time, float aspect, float isMobile){
-          uv -= vec2(0.30,0.20);
-          float shrink = aspect<1.0?1.0:clamp(aspect,1.0,1.3);
-          float funnel = mix(0.7,1.8,isMobile);
-          uv.y *= shrink * funnel;
-
-          float amp   = mix(0.8,0.3, clamp(uv.y/0.7,0.0,1.0));
-          float curve = 0.5 + amp*sin(uv.y*3.0 + time*0.15);
-          float d     = abs(uv.x - curve);
-          float m     = smoothstep(0.6,0.0,d);
-          m *= (snoise(uv*4.0 + time*0.15)*0.2 + 0.8);
-          return clamp(m,0.0,1.0);
-        }
-      `;
-
-      // 4. SHAPE SHADER (aurora glow)
-      var fragShape = `
-        precision highp float;
-        uniform vec2  uResolution;
-        uniform float uTime, uAspect, uIsMobile;
-        ${sharedGLSL}
-
-        void main(){
-          vec2 uv = gl_FragCoord.xy / uResolution;
-          float m = auroraMask(uv, uTime, uAspect, uIsMobile);
-
-          float vFade = smoothstep(0.0, 0.6, uv.y);
-          m *= vFade;
-
-          gl_FragColor = vec4(vec3(0.10,0.54,0.43), m * 0.6);
-        }
-      `;
-
-      scene.add(new THREE.Mesh(
-        new THREE.PlaneGeometry(2, 2),
-        new THREE.ShaderMaterial({
-          uniforms: uniforms,
-          fragmentShader: fragShape,
-          transparent: true,
-          depthWrite: false
-        })
-      ));
-
-      // 5. PARTICLES
-      var COUNT = 18000;
-      var geo = new THREE.BufferGeometry();
-      var pos = new Float32Array(COUNT * 3);
-      var seed = new Float32Array(COUNT);
-
-      for (var i = 0; i < COUNT; i++) {
-        pos[3 * i]     = Math.random() * 2 - 1;
-        pos[3 * i + 1] = Math.random() * 2 - 1;
-        pos[3 * i + 2] = 0;
-        seed[i] = Math.random();
-      }
-
-      geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-      geo.setAttribute('aSeed',    new THREE.BufferAttribute(seed, 1));
-
-      var vertPart = `
-        precision highp float;
-        attribute float aSeed;
-        uniform float uTime, uIsLarge;
-        ${sharedGLSL}
-
-        void main(){
-          vec2 p0 = position.xy;
-          float t  = uTime*0.1 + aSeed*5.0;
-          vec2 vel= (vec2(
-            snoise(p0*2.0 + t),
-            snoise(p0*2.0 + t + 50.0)
-          )*2.0 -1.0)*0.02;
-          vec2 p = p0 + vel;
-          float ps= 3.0 + snoise(vec2(aSeed*20.0,t))*1.0;
-          ps *= mix(1.0,0.5,uIsLarge);
-          gl_PointSize = ps;
-          gl_Position  = vec4(p,0.0,1.0);
-        }
-      `;
-
-      var fragPart = `
-        precision highp float;
-        uniform vec2  uResolution;
-        uniform float uTime, uAspect, uIsMobile, uIsLarge;
-        ${sharedGLSL}
-
-        void main(){
-          vec2 uv = gl_FragCoord.xy / uResolution;
-          float m  = auroraMask(uv,uTime,uAspect,uIsMobile);
-          float edge= smoothstep(0.0,0.40,m);
-
-          float vFade = smoothstep(0.0, 0.6, uv.y);
-          edge *= vFade;
-          if(edge < 0.003) discard;
-
-          vec2 d = gl_PointCoord - 0.5;
-          if(length(d)>0.5) discard;
-
-          float f = flicker(gl_FragCoord.x+gl_FragCoord.y, uTime*0.3);
-          float alpha = edge * mix(0.2,1.0,f);
-
-          alpha *= mix(1.0,0.6,uIsMobile);
-
-          vec3 green = vec3(0.10,0.65,0.50);
-          vec3 col   = mod(gl_FragCoord.x+gl_FragCoord.y,10.0)<9.0
-                        ? green
-                        : vec3(1.0);
-          gl_FragColor = vec4(col, alpha);
-        }
-      `;
-
-      var points = new THREE.Points(geo, new THREE.ShaderMaterial({
-        uniforms: uniforms,
-        vertexShader: vertPart,
-        fragmentShader: fragPart,
-        transparent: true,
-        depthWrite: false,
-        depthTest: false
-      }));
-      points.renderOrder = 1;
-      scene.add(points);
-
-      // 6. LOOP & RESIZE
-      var prevW = window.innerWidth, prevH = window.innerHeight;
-      var resizeDebounce;
-      window.addEventListener('resize', function() {
-        clearTimeout(resizeDebounce);
-        resizeDebounce = setTimeout(function() {
-          var w = window.innerWidth;
-          var h = window.innerHeight;
-          if (w === prevW && Math.abs(h - prevH) < 100) return;
-          prevW = w; prevH = h;
-          renderer.setSize(w, h);
-          uniforms.uResolution.value.set(w, h);
-          uniforms.uAspect.value = w / h;
-          uniforms.uIsMobile.value = w < 1024 ? 1.0 : 0.0;
-          uniforms.uIsLarge.value  = w > 1900 ? 1.0 : 0.0;
-        }, 200);
-      });
-
-      var clock = new THREE.Clock();
-      (function tick() {
-        uniforms.uTime.value = clock.getElapsedTime();
-        renderer.render(scene, camera);
-        requestAnimationFrame(tick);
-      })();
-    })();
-
-    // ---- Hero Tile Hover → Background Color Change ----
-    (function() {
-      var heroSection = document.getElementById('hero');
-      if (!heroSection) return;
-      var defaultColor = '#2dd4a8';
-      var tiles = heroSection.querySelectorAll('.hero-tile[data-hover-color]');
-      tiles.forEach(function(tile) {
-        tile.addEventListener('mouseenter', function() {
-          heroSection.style.setProperty('--hero-bg', tile.getAttribute('data-hover-color'));
-        });
-        tile.addEventListener('mouseleave', function() {
-          heroSection.style.setProperty('--hero-bg', defaultColor);
-        });
-      });
-    })();
+    // ---- (Hero tile hover removed — replaced by keyword cloud) ----
 
     // ---- (Legacy hero image scroll — disabled) ----
     (function() {
