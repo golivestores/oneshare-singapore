@@ -48,39 +48,14 @@
       width: auto;
     }
     .head-banner__text {
-      font-size: 1rem;
+      font-size: 0.875rem;
       letter-spacing: 0.5px;
-      color: white;
+      color: rgba(255,255,255,0.8);
       margin: 0;
       font-weight: 400;
     }
-    .head-banner__link {
-      flex-shrink: 0;
-      color: #1a8a6e;
-      font-size: 1rem;
-      position: relative;
-      width: fit-content;
-      text-decoration: none;
-    }
-    .head-banner__link::after {
-      content: "";
-      position: absolute;
-      height: 2px;
-      width: 100%;
-      bottom: -2px;
-      left: 0;
-      background-color: #1a8a6e;
-    }
-    .head-banner__off {
-      position: absolute;
-      z-index: 3;
-      top: 50%;
-      right: 1rem;
-      transform: translateY(-50%);
-      cursor: pointer;
-      background: none;
-      border: none;
-      padding: 4px;
+    .head-banner:hover .head-banner__text {
+      color: #fff;
     }
 
     /* ---- Header / Nav (FirstRound style) ---- */
@@ -94,10 +69,6 @@
       position: relative;
       z-index: 10;
       transition: transform 0.4s ease, opacity 0.4s ease;
-    }
-    .header-desktop.nav-hidden {
-      transform: translateY(-120%);
-      opacity: 0;
     }
     .header-desktop nav {
       max-width: 1400px;
@@ -208,8 +179,8 @@
     .btn-label {
       border-radius: 9999px;
       padding: 0.5rem 1rem;
-      transition: background-color 0.3s;
-      color: #000;
+      transition: background-color 0.3s, color 0.3s;
+      color: #fff;
       background-color: #1a8a6e;
       display: flex;
       align-items: center;
@@ -220,10 +191,14 @@
       .btn-label { font-size: 1.125rem; }
     }
     .btn:hover .button_circle {
-      background-color: #fff;
+      background-color: #0d1f1a;
+    }
+    .btn:hover .button_circle svg {
+      stroke: #fff;
     }
     .btn:hover .btn-label {
-      background-color: #fff;
+      background-color: #0d1f1a;
+      color: #fff;
     }
 
     /* ---- Hero Section ---- */
@@ -419,18 +394,18 @@
       .kw-pill { font-size: 8px; padding: 4px 9px; }
       .kw-lg { font-size: 10px; padding: 5px 11px; }
       .kw-sm { font-size: 7px; padding: 3px 8px; }
-      /* Top area — above title, below banner+header */
-      .kw-1  { top: 15%; left: 4%; }
-      .kw-6  { top: 15%; right: 4%; left: auto; }
-      .kw-2  { top: 22%; left: 2%; right: auto; }
-      .kw-3  { top: 22%; right: 3%; left: auto; }
+      /* Top area — below banner+nav */
+      .kw-1  { top: 18%; left: 4%; }
+      .kw-6  { top: 18%; right: 4%; left: auto; }
+      .kw-2  { top: 24%; left: 2%; right: auto; }
+      .kw-3  { top: 24%; right: 3%; left: auto; }
       /* Bottom area — below subtitle */
-      .kw-5  { top: 78%; left: 3%; }
-      .kw-7  { top: 78%; right: 3%; left: auto; }
-      .kw-9  { top: 85%; left: 20%; right: auto; }
-      .kw-10 { top: 85%; right: 5%; left: auto; }
-      .kw-11 { top: 91%; left: 5%; }
-      .kw-12 { top: 91%; right: 12%; }
+      .kw-5  { top: 72%; left: 3%; }
+      .kw-7  { top: 72%; right: 3%; left: auto; }
+      .kw-9  { top: 78%; left: 20%; right: auto; }
+      .kw-10 { top: 78%; right: 5%; left: auto; }
+      .kw-11 { top: 84%; left: 5%; }
+      .kw-12 { top: 84%; right: 12%; }
       /* Hide ones that overlap title area */
       .kw-4  { display: none; }
       .kw-8  { display: none; }
@@ -454,6 +429,7 @@
       align-items: center;
       padding: 2rem 0.5rem;
       color: white;
+      transition: transform 0.3s ease, opacity 0.3s ease;
     }
     .mobile-logo-wrap {
       width: 41.666%;
@@ -479,6 +455,47 @@
       display: flex;
       justify-content: center;
       border: none;
+    }
+
+    /* ---- Mobile Menu Overlay ---- */
+    .mobile-menu-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(13,31,26,0.97);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .mobile-menu-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .mobile-menu-overlay a {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #fff;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .mobile-menu-overlay a:hover {
+      color: #2dd4a8;
+    }
+    .mobile-menu-close {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.5rem;
     }
 
     /* ---- Preloader ---- */
@@ -1439,7 +1456,7 @@
 
     /* Card button color override for dark card text */
     .expertise-card .btn-label {
-      color: #000;
+      color: #fff;
     }
 
     /* ---- Team / Testimonials Section ---- */
@@ -2721,13 +2738,15 @@
 
     @media (max-width: 768px) {
       .about-section-inner { flex-direction: column; }
-      .about-right { width: 100%; overflow: hidden; }
-      .pv-wrap { width: 280px; height: 280px; margin: 0 auto; }
-      .pv-piece { width: 130px; height: 130px; }
-      .pv-tag-ir { left: -40px; }
-      .pv-tag-esop { right: -40px; }
-      .pv-tag { padding: 4px 8px; }
-      .pv-tag span { font-size: 0.75rem; }
+      .about-right { width: 100%; }
+      .pv-wrap { width: 220px; height: 220px; margin: 0 auto; }
+      .pv-piece { width: 100px; height: 100px; }
+      .pv-tag-ir { left: -30px; }
+      .pv-tag-esop { right: -30px; }
+      .pv-tag-ma { bottom: -40px; }
+      .pv-tag { padding: 3px 6px; }
+      .pv-tag span { font-size: 0.625rem; }
+      .pv-lines-svg { display: none; }
     }
 
     /* ============================================
@@ -2846,10 +2865,8 @@
       body { -webkit-text-size-adjust: 100%; }
 
       /* Header */
-      .head-banner__container { flex-wrap: wrap; gap: 8px; padding: 0.5rem 2.5rem 0.5rem 0.75rem; justify-content: center; text-align: center; }
-      .head-banner__container-left { gap: 10px; justify-content: center; width: 100%; }
+      .head-banner__container { padding: 0.4rem 0.75rem; justify-content: center; }
       .head-banner__text { font-size: 0.75rem; text-align: center; }
-      .head-banner__link { margin: 0 auto; }
 
       /* Preloader */
       .pre-terminal { padding: 0.75rem; }
@@ -2922,6 +2939,21 @@
 </head>
 
 <body>
+  <!-- Mobile header (top-level, outside all stacking contexts) -->
+  <div class="mobile-header">
+    <div class="mobile-logo-wrap">
+      <a href="#hero"><img src="one-share-logo.png" alt="ONE SHARE" style="filter:brightness(0) saturate(100%);" /></a>
+    </div>
+    <div class="mobile-nav-right">
+      <button class="mobile-burger" data-menu-open>
+        <div class="burger-line-menu">
+          <div class="burger-line" style="background-color:#0d2e25;"></div>
+          <div class="burger-line" style="background-color:#0d2e25;"></div>
+        </div>
+      </button>
+    </div>
+  </div>
+
   <!-- ============ Preloader (Bloomberg Terminal) ============ -->
   <div class="preloader" id="preloader">
     <div class="pre-flash" id="preFlash"></div>
@@ -2950,24 +2982,11 @@
           <!-- Hero Section (bg wraps from banner through hero content) -->
           <section class="hero-section" id="hero">
             <!-- Announcement banner inside hero -->
-            <div class="head-banner" id="headBanner">
+            <a class="head-banner" id="headBanner" href="#contact" style="display:block;text-decoration:none;">
               <div class="head-banner__container">
-                <div class="head-banner__container-left">
-                  <div class="head-banner__container-text">
-                    <h3 class="head-banner__text" data-zh="ONE SHARE (SINGAPORE) · 综合资本市场服务" data-en="ONE SHARE (SINGAPORE) · Integrated Capital Market Services">ONE SHARE (SINGAPORE) · Integrated Capital Market Services</h3>
-                  </div>
-                </div>
-                <a class="head-banner__link" href="#contact" data-zh="了解更多" data-en="Learn More">Learn More</a>
-                <button class="head-banner__off" id="closeBanner" aria-label="关闭">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="9.27" height="9.27" viewBox="0 0 9.27 9.27">
-                    <g transform="translate(4.635 -1.806) rotate(45)" opacity="0.5">
-                      <line x1="9.109" transform="translate(0 4.555)" fill="none" stroke="#f7f7f7" stroke-linecap="round" stroke-width="2" />
-                      <line x1="9.109" transform="translate(4.555 0) rotate(90)" fill="none" stroke="#f7f7f7" stroke-linecap="round" stroke-width="2" />
-                    </g>
-                  </svg>
-                </button>
+                <span class="head-banner__text" data-zh="ONE SHARE · 综合资本市场服务 →" data-en="ONE SHARE · Integrated Capital Market Services →">ONE SHARE · Integrated Capital Market Services →</span>
               </div>
-            </div>
+            </a>
             <!-- Nav inside hero -->
             <div class="header-desktop" style="position:relative;z-index:10;">
               <nav>
@@ -2990,20 +3009,6 @@
                   </ul>
                 </div>
               </nav>
-            </div>
-            <!-- Mobile header -->
-            <div class="mobile-header">
-              <div class="mobile-logo-wrap">
-                <a href="#hero"><img src="one-share-logo.png" alt="ONE SHARE" style="filter:brightness(0) saturate(100%);" /></a>
-              </div>
-              <div class="mobile-nav-right">
-                <button class="mobile-burger" data-menu-open>
-                  <div class="burger-line-menu">
-                    <div class="burger-line" style="background-color:#0d2e25;"></div>
-                    <div class="burger-line" style="background-color:#0d2e25;"></div>
-                  </div>
-                </button>
-              </div>
             </div>
             <!-- Keyword cloud -->
             <div class="hero-cloud">
@@ -3142,7 +3147,7 @@
                           <a href="#contact" class="btn">
                             <div class="btn-label anim-clip-right"><span data-zh="了解更多" data-en="Learn More">Learn More</span></div>
                             <div class="button_circle anim-pop">
-                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0d1f1a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                             </div>
                           </a>
                           <ul class="card-tags">
@@ -3166,7 +3171,7 @@
                           <a href="#contact" class="btn">
                             <div class="btn-label anim-clip-right"><span data-zh="了解更多" data-en="Learn More">Learn More</span></div>
                             <div class="button_circle anim-pop">
-                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0d1f1a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                             </div>
                           </a>
                           <ul class="card-tags">
@@ -3190,7 +3195,7 @@
                           <a href="#contact" class="btn">
                             <div class="btn-label anim-clip-right"><span data-zh="了解更多" data-en="Learn More">Learn More</span></div>
                             <div class="button_circle anim-pop">
-                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0d1f1a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                             </div>
                           </a>
                           <ul class="card-tags">
@@ -3226,7 +3231,7 @@
                     <a href="#contact" class="btn" title="查看更多">
                       <div class="btn-label"><span data-zh="查看更多" data-en="View All">View All</span></div>
                       <div class="button_circle">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0d1f1a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                       </div>
                     </a>
                   </div>
@@ -3339,37 +3344,20 @@
                 <div class="methodologie-left">
                   <div class="methodologie-left-inner">
                     <h2 class="methodologie-heading scroll-reveal" data-splitting="words" data-zh="让我们开始对话。" data-en="Let's start a conversation.">Let's start a conversation.</h2>
-                    <div style="padding:1.5rem 0;">
-                      <p class="methodologie-desc" data-zh="无论您处于资本路径的哪个阶段，我们都期待与您交流。填写表单，我们的团队将在 1-2 个工作日内与您联系。" data-en="Wherever you are on your capital journey, we look forward to connecting. Fill out the form and our team will reach out within 1-2 business days.">Wherever you are on your capital journey, we look forward to connecting. Fill out the form and our team will reach out within 1-2 business days.</p>
+                    <div style="padding:1.5rem 0 0;">
+                      <p class="methodologie-desc" data-zh="无论您处于资本路径的哪个阶段，我们都期待与您交流。" data-en="Wherever you are on your capital journey, we look forward to connecting.">Wherever you are on your capital journey, we look forward to connecting.</p>
                     </div>
-                    <!-- Contact info cards -->
-                    <ul style="list-style:none;padding:2rem 0 0;">
-                      <li style="margin-bottom:0.5rem;display:flex;gap:0.25rem;align-items:stretch;">
-                        <span style="width:50px;display:flex;align-items:center;justify-content:center;background:rgba(26,138,110,0.15);border-radius:0.375rem;padding:0.75rem;flex-shrink:0;">
-                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                        </span>
-                        <span style="display:inline-flex;align-items:center;background:rgba(26,138,110,0.08);flex-grow:1;border-radius:0.375rem;padding:0.5rem 1rem;font-size:0.875rem;color:#fff;">contact@oneshare.sg</span>
-                      </li>
-                      <li style="margin-bottom:0.5rem;display:flex;gap:0.25rem;align-items:stretch;">
-                        <span style="width:50px;display:flex;align-items:center;justify-content:center;background:rgba(26,138,110,0.15);border-radius:0.375rem;padding:0.75rem;flex-shrink:0;">
-                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                        </span>
-                        <span style="display:inline-flex;align-items:center;background:rgba(26,138,110,0.08);flex-grow:1;border-radius:0.375rem;padding:0.5rem 1rem;font-size:0.875rem;color:#fff;line-height:1.4;">Marina One East Tower #5<br>7 Straits View, Singapore 018936</span>
-                      </li>
-                    </ul>
-                    <!-- Key stats -->
-                    <div style="display:flex;gap:1.5rem;padding-top:2.5rem;flex-wrap:wrap;">
-                      <div style="flex:1;min-width:100px;padding:1.25rem;border-radius:12px;background:rgba(26,138,110,0.08);border:1px solid rgba(26,138,110,0.15);">
-                        <div style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:1.75rem;color:#1a8a6e;" data-zh="SGX" data-en="SGX">SGX</div>
-                        <div style="font-size:0.75rem;color:rgba(255,255,255,0.4);margin-top:0.25rem;" data-zh="新加坡交易所" data-en="Singapore Exchange">Singapore Exchange</div>
-                      </div>
-                      <div style="flex:1;min-width:100px;padding:1.25rem;border-radius:12px;background:rgba(26,138,110,0.08);border:1px solid rgba(26,138,110,0.15);">
-                        <div style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:1.75rem;color:#1a8a6e;" data-zh="HKEX" data-en="HKEX">HKEX</div>
-                        <div style="font-size:0.75rem;color:rgba(255,255,255,0.4);margin-top:0.25rem;" data-zh="港交所" data-en="Hong Kong Exchange">Hong Kong Exchange</div>
-                      </div>
-                      <div style="flex:1;min-width:100px;padding:1.25rem;border-radius:12px;background:rgba(26,138,110,0.08);border:1px solid rgba(26,138,110,0.15);">
-                        <div style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:1.75rem;color:#1a8a6e;" data-zh="1-2" data-en="1-2">1-2</div>
-                        <div style="font-size:0.75rem;color:rgba(255,255,255,0.4);margin-top:0.25rem;" data-zh="工作日内回复" data-en="Business days response">Business days response</div>
+                    <!-- Address -->
+                    <div style="display:flex;align-items:center;gap:0.5rem;padding:1.25rem 0 1.5rem;font-size:0.875rem;color:rgba(255,255,255,0.5);">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a8a6e" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                      <span>Marina One East Tower #5, 7 Straits View, Singapore 018936</span>
+                    </div>
+                    <!-- Image with motion -->
+                    <div class="contact-image-wrap scroll-reveal" style="border-radius:20px;overflow:hidden;position:relative;margin-top:0.5rem;">
+                      <img src="sign up.jpg" alt="ONE SHARE office" style="width:100%;height:280px;object-fit:cover;display:block;transition:transform 0.6s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                      <div style="position:absolute;inset:0;background:linear-gradient(180deg,transparent 50%,rgba(13,31,26,0.6) 100%);pointer-events:none;"></div>
+                      <div style="position:absolute;bottom:1.25rem;left:1.25rem;right:1.25rem;">
+                        <span style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.75rem;color:rgba(255,255,255,0.85);letter-spacing:0.08em;" data-zh="每一股都被正确理解，企业价值才真正被看见。" data-en="When every share is properly understood, true value becomes visible.">When every share is properly understood, true value becomes visible.</span>
                       </div>
                     </div>
                   </div>
@@ -3406,6 +3394,7 @@
                             <option value="ir" style="background:#1a1a1a;" data-zh="投资者关系/公共关系" data-en="Investor Relations / Public Relations">Investor Relations / Public Relations</option>
                             <option value="equity" style="background:#1a1a1a;" data-zh="股权激励" data-en="Equity Incentives">Equity Incentives</option>
                             <option value="ma" style="background:#1a1a1a;" data-zh="跨境并购" data-en="Cross-border M&amp;A">Cross-border M&amp;A</option>
+                            <option value="other" style="background:#1a1a1a;" data-zh="其他" data-en="Other">Other</option>
                           </select>
                         </div>
                         <div style="margin-bottom:1.75rem;">
@@ -3455,6 +3444,10 @@
                   <li><a target="_blank" href="https://www.instagram.com/sgvresearch?igsh=b2RpaDJkcGs1cXJ2&utm_source=qr" title="Instagram"><svg width="28" height="28" viewBox="0 0 24 24" fill="#fff"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C16.67.014 16.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></a></li>
                   <!-- InvestSG -->
                   <li><a target="_blank" href="https://www.investsg.asia/users/sg_visual_research#/all" title="InvestSG"><img src="investsg.png" alt="InvestSG" style="border-radius:4px;background:#fff;padding:2px;"></a></li>
+                  <!-- Moomoo -->
+                  <li><a target="_blank" href="https://www.moomoo.com/hans/community/profile/sg-visual-research-104633549?id=104633549&nickname=SG%20Visual%20Research" title="Moomoo"><img src="Moomoo.png" alt="Moomoo" style="border-radius:4px;"></a></li>
+                  <!-- Tiger Brokers -->
+                  <li><a target="_blank" href="https://www.laohu8.com/personal/3558404604264882" title="Tiger Brokers"><img src="tiger.png" alt="Tiger Brokers" style="border-radius:4px;filter:invert(1);"></a></li>
                 </ul>
               </div>
             </div>
@@ -3469,6 +3462,19 @@
     </main>
   </div>
 
+  <!-- Mobile Menu Overlay -->
+  <div class="mobile-menu-overlay" id="mobileMenuOverlay">
+    <button class="mobile-menu-close" aria-label="Close">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <a href="#services" data-zh="我们与服务" data-en="About & Services">About & Services</a>
+    <a href="#insights" data-zh="新闻与洞察" data-en="News & Insights">News & Insights</a>
+    <a href="#contact" data-zh="联系我们" data-en="Contact">Contact</a>
+    <div style="display:inline-flex;align-items:center;gap:4px;background:rgba(255,255,255,0.1);border-radius:20px;padding:3px;margin-top:1rem;">
+      <button class="os-lang-btn" data-lang="zh" style="padding:6px 14px;border:none;cursor:pointer;border-radius:16px;font-size:0.875rem;font-weight:700;background:transparent;color:rgba(255,255,255,0.5);transition:0.2s;">华文</button>
+      <button class="os-lang-btn" data-lang="en" style="padding:6px 14px;border:none;cursor:pointer;border-radius:16px;font-size:0.875rem;font-weight:700;background:rgba(255,255,255,0.15);color:#fff;transition:0.2s;">EN</button>
+    </div>
+  </div>
 
   <script>
     // ---- Preloader (Bloomberg Terminal) ----
@@ -3648,33 +3654,8 @@
       setTimeout(initScrollReveal, 3800);
     })();
 
-    // ---- Close Announcement Banner ----
-    document.getElementById('closeBanner').addEventListener('click', function() {
-      var banner = document.getElementById('headBanner');
-      banner.style.transition = 'height 0.4s ease, opacity 0.4s ease';
-      banner.style.height = banner.offsetHeight + 'px';
-      requestAnimationFrame(function() {
-        banner.style.height = '0';
-        banner.style.opacity = '0';
-        banner.style.overflow = 'hidden';
-      });
-    });
+    // ---- Banner is now a clickable link, no close button needed ----
 
-    // ---- Hide nav on scroll down, show on scroll up ----
-    (function() {
-      var nav = document.querySelector('.header-desktop');
-      if (!nav) return;
-      var lastY = 0;
-      window.addEventListener('scroll', function() {
-        var y = window.scrollY;
-        if (y > lastY && y > 100) {
-          nav.classList.add('nav-hidden');
-        } else {
-          nav.classList.remove('nav-hidden');
-        }
-        lastY = y;
-      }, { passive: true });
-    })();
 
 
     // ---- (Hero tile hover removed — replaced by keyword cloud) ----
@@ -4418,6 +4399,25 @@
       });
     })();
 
+    // ---- Mobile Menu ----
+    (function() {
+      var burger = document.querySelector('.mobile-burger');
+      var overlay = document.getElementById('mobileMenuOverlay');
+      if (!burger || !overlay) return;
+      var closeBtn = overlay.querySelector('.mobile-menu-close');
+      burger.addEventListener('click', function() {
+        overlay.classList.add('active');
+      });
+      closeBtn.addEventListener('click', function() {
+        overlay.classList.remove('active');
+      });
+      overlay.querySelectorAll('a').forEach(function(link) {
+        link.addEventListener('click', function() {
+          overlay.classList.remove('active');
+        });
+      });
+    })();
   </script>
+
 </body>
 </html>
